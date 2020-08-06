@@ -3,7 +3,6 @@ node_modules
 /dist
 firebase-debug.log
 firebase.js
-src/services/apiCalls.js
 # local env files
 .env.local
 .env.*.local
