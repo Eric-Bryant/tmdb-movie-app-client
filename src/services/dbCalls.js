@@ -7,13 +7,6 @@ export default {
     watchListUpdate[`WatchList.${movieID}.title`] = movieTitle
     refDoc.update(watchListUpdate)
   },
-  async getUsersWatchList(userID) {
-    const refDoc = Firebase.db.collection('users').doc(userID)
-    const userData = await refDoc.get()
-    if (userData.data().WatchList) {
-      return userData.data().WatchList
-    }
-  },
   async getUsersLists(userID) {
     const refDoc = Firebase.db.collection('users').doc(userID)
     const userData = await refDoc.get()
