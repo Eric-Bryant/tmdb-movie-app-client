@@ -27,7 +27,7 @@ export default {
     const userData = await refDoc.get()
     const userWatchList = userData.data().WatchList
     const userWatchListTitles = Object.keys(userWatchList).map(movieID => {
-      return userWatchList[movieID].title
+      return movieID
     })
 
     return userWatchListTitles
