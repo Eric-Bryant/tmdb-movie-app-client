@@ -27,7 +27,6 @@
       placeholder="Search for something..."
       return-object
       prepend-inner-icon="mdi-magnify"
-      @keyup.enter="sendToResultsPage"
       @change="goToDetails"
       @click:prepend-inner="sendToResultsPage"
       class="search-form-group__autocomplete"

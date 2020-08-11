@@ -58,13 +58,6 @@ export default {
     }
   },
   methods: {
-    addToWatchList() {
-      dbClient.addMediaToWatchList(
-        this.getUID,
-        this.movieInfo.id,
-        this.movieInfo.title
-      )
-    },
     async getWatchList() {
       const watchList = await dbClient.getUsersWatchList(this.getUID)
       if (watchList) {
