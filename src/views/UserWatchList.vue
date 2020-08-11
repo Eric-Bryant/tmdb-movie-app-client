@@ -1,22 +1,29 @@
 <template>
   <div>
     <h1>Your Watch List</h1>
-    <div v-if="userWatchList.length > 0">
-      <p v-for="movie in userWatchList" :key="movie.index">
-        {{ movie }}
-      </p>
-    </div>
+    <v-layout v-if="userWatchList.length > 0">
+      <MediaCard
+        v-for="media in userWatchList"
+        :key="media.title"
+        :mediaInfo="media"
+        @removeFromList="removeFromList($event)"
+      />
+    </v-layout>
     <p v-else>Your list is empty</p>
   </div>
 </template>
 
 <script>
 import dbClient from '../services/dbCalls'
-import Firebase from '../firebase'
+import apiClient from '../services/apiCalls'
+import MediaCard from '../components/MediaCard'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'UserWatchList',
+  components: {
+    MediaCard
+  },
   data() {
     return {
       userWatchList: []
@@ -27,14 +34,22 @@ export default {
   },
   methods: {
     async getWatchList() {
-      const watchListTitles = await dbClient.getUsersWatchList(this.getUID)
-      this.userWatchList = watchListTitles
+      dbClient.getUsersWatchList(this.getUID).then(watchList => {
+        watchList.map(id => {
+          apiClient.getMovieDetails(id).then(result => {
+            this.userWatchList.push(result.data)
+          })
+        })
+      })
+    },
+    removeFromList(mediaInfo) {
+      this.userWatchList = this.userWatchList.filter(val => {
+        return val.id != mediaInfo.id
+      })
     }
   },
   created() {
-    Firebase.auth.onAuthStateChanged(() => {
-      this.getWatchList()
-    })
+    this.getWatchList()
   }
 }
 </script>

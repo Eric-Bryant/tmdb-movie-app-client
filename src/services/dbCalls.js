@@ -7,13 +7,8 @@ export default {
     watchListUpdate[`WatchList.${mediaID}.title`] = mediaTitle
     refDoc.update(watchListUpdate)
   },
-  removeMediaFromWatchList(userID, mediaID, mediaTitle) {
-    const FieldValue = Firebase.db
+  removeMediaFromWatchList(userID, mediaID) {
     const refDoc = Firebase.db.collection('users').doc(userID)
-    const watchListRemoval = {}
-    // watchListRemoval[`WatchList.${mediaID}`] = Firebase.db.FieldValue.delete()
-    // console.log(watchListRemoval)
-    console.log(Firebase.db.FieldValue)
     refDoc.update({
       [`WatchList.${mediaID}`]: Firebase.dbDelete.delete()
     })

@@ -34,16 +34,12 @@ export default {
         this.mediaInfo.title
       )
 
-      this.$emit('addedToList')
+      this.$emit('addedToList', this.mediaInfo)
     },
     removeFromWatchList() {
-      dbClient.removeMediaFromWatchList(
-        this.getUID,
-        this.mediaInfo.id,
-        this.mediaInfo.title
-      )
+      dbClient.removeMediaFromWatchList(this.getUID, this.mediaInfo.id)
 
-      this.$emit('removedFromList')
+      this.$emit('removedFromList', this.mediaInfo)
     }
   }
 }

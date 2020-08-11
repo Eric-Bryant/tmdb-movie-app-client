@@ -21,20 +21,27 @@
     <v-spacer></v-spacer>
     <v-card-actions>
       <v-btn color="info" :to="movieLink">Read</v-btn>
-      <v-btn color="primary" v-if="!onList" @click="addToWatchList">Add</v-btn>
-      <v-btn color="warning">Remove</v-btn>
+      <AddRemoveButton
+        :onList="onList"
+        :mediaInfo="mediaInfo"
+        @removedFromList="removeThisFromList($event)"
+      />
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
 import dbClient from '../services/dbCalls'
+import AddRemoveButton from '../components/AddRemoveButton'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'MovieCard',
+  name: 'MediaCard',
+  components: {
+    AddRemoveButton
+  },
   props: {
-    movieInfo: {
+    mediaInfo: {
       type: Object,
       default: function() {
         return {}
@@ -43,11 +50,11 @@ export default {
   },
   data() {
     return {
-      movieTitle: this.movieInfo.title,
+      movieTitle: this.mediaInfo.title,
       moviePoster:
-        'https://image.tmdb.org/t/p/w342/' + this.movieInfo.poster_path,
-      movieDescription: this.movieInfo.overview,
-      movieLink: '/movie/' + this.movieInfo.id,
+        'https://image.tmdb.org/t/p/w342/' + this.mediaInfo.poster_path,
+      movieDescription: this.mediaInfo.overview,
+      movieLink: '/movie/' + this.mediaInfo.id,
       onList: false
     }
   },
@@ -61,11 +68,21 @@ export default {
     async getWatchList() {
       const watchList = await dbClient.getUsersWatchList(this.getUID)
       if (watchList) {
-        console.log(Object.keys(watchList))
+        if (watchList.indexOf(this.mediaInfo.id) > -1) {
+          this.onList = false
+        } else {
+          this.onList = true
+        }
       } else {
         console.log('no watchlist')
       }
+    },
+    removeThisFromList(mediaInfo) {
+      this.$emit('removeFromList', mediaInfo)
     }
+  },
+  created() {
+    this.getWatchList()
   }
 }
 </script>

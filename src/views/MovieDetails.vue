@@ -6,7 +6,7 @@
       <p>{{ movie.overview }}</p>
       <AddRemoveButton
         v-if="loggedIn"
-        :onList="onList ? true : false"
+        :onList="onList"
         :mediaInfo="movie"
         @addedToList="onList = true"
         @removedFromList="onList = false"
@@ -33,7 +33,7 @@ export default {
     return {
       movie: {},
       movieExists: false,
-      onList: ''
+      onList: false
     }
   },
   watch: {
@@ -46,8 +46,8 @@ export default {
             this.movieExists = true
             if (this.loggedIn) {
               dbClient.getUsersWatchList(this.getUID).then(watchList => {
-                this.onList = watchList.some(id => {
-                  return this.movie.id == id
+                this.onList = watchList.some(val => {
+                  return val == this.movie.id
                 })
               })
             }
@@ -74,8 +74,8 @@ export default {
           this.movieExists = true
           if (this.loggedIn) {
             dbClient.getUsersWatchList(this.getUID).then(watchList => {
-              this.onList = watchList.some(id => {
-                return this.movie.id == id
+              this.onList = watchList.some(val => {
+                return val == this.movie.id
               })
             })
           }
