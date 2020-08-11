@@ -59,7 +59,7 @@ export default {
   },
   methods: {
     addToWatchList() {
-      dbClient.addMovieToWatchList(
+      dbClient.addMediaToWatchList(
         this.getUID,
         this.movieInfo.id,
         this.movieInfo.title

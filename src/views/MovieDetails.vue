@@ -4,7 +4,13 @@
       <p>{{ movie.title }}</p>
       <img :src="moviePoster" v-if="movie.poster_path" />
       <p>{{ movie.overview }}</p>
-      <ActionButton :onList="onList ? true : false" />
+      <AddRemoveButton
+        v-if="loggedIn"
+        :onList="onList ? true : false"
+        :mediaInfo="movie"
+        @addedToList="onList = true"
+        @removedFromList="onList = false"
+      />
     </div>
     <div v-else>
       <p>Movie Not Found</p>
@@ -15,13 +21,13 @@
 <script>
 import dbClient from '../services/dbCalls'
 import { mapGetters } from 'vuex'
-import ActionButton from '../components/ActionButton'
+import AddRemoveButton from '../components/AddRemoveButton'
 import apiClient from '../services/apiCalls'
 
 export default {
   name: 'MovieDetails',
   components: {
-    ActionButton
+    AddRemoveButton
   },
   data() {
     return {
@@ -38,11 +44,13 @@ export default {
           if (response.status == 200) {
             this.movie = response.data
             this.movieExists = true
-            dbClient.getUsersWatchList(this.getUID).then(watchList => {
-              this.onList = watchList.some(id => {
-                return this.movie.id == id
+            if (this.loggedIn) {
+              dbClient.getUsersWatchList(this.getUID).then(watchList => {
+                this.onList = watchList.some(id => {
+                  return this.movie.id == id
+                })
               })
-            })
+            }
           }
         })
         .catch(error => {
@@ -52,7 +60,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUID']),
+    ...mapGetters(['getUID', 'loggedIn']),
     moviePoster() {
       return `https://image.tmdb.org/t/p/w500/${this.movie.poster_path}`
     }
@@ -64,11 +72,13 @@ export default {
         if (response.status == 200) {
           this.movie = response.data
           this.movieExists = true
-          dbClient.getUsersWatchList(this.getUID).then(watchList => {
-            this.onList = watchList.some(id => {
-              return this.movie.id == id
+          if (this.loggedIn) {
+            dbClient.getUsersWatchList(this.getUID).then(watchList => {
+              this.onList = watchList.some(id => {
+                return this.movie.id == id
+              })
             })
-          })
+          }
         }
       })
       .catch(error => {

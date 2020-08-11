@@ -1,11 +1,22 @@
 import Firebase from '../firebase'
 
 export default {
-  addMovieToWatchList(userID, movieID, movieTitle) {
+  addMediaToWatchList(userID, mediaID, mediaTitle) {
     const refDoc = Firebase.db.collection('users').doc(userID)
     const watchListUpdate = {}
-    watchListUpdate[`WatchList.${movieID}.title`] = movieTitle
+    watchListUpdate[`WatchList.${mediaID}.title`] = mediaTitle
     refDoc.update(watchListUpdate)
+  },
+  removeMediaFromWatchList(userID, mediaID, mediaTitle) {
+    const FieldValue = Firebase.db
+    const refDoc = Firebase.db.collection('users').doc(userID)
+    const watchListRemoval = {}
+    // watchListRemoval[`WatchList.${mediaID}`] = Firebase.db.FieldValue.delete()
+    // console.log(watchListRemoval)
+    console.log(Firebase.db.FieldValue)
+    refDoc.update({
+      [`WatchList.${mediaID}`]: Firebase.dbDelete.delete()
+    })
   },
   async getUsersLists(userID) {
     const refDoc = Firebase.db.collection('users').doc(userID)
@@ -26,8 +37,8 @@ export default {
     const refDoc = Firebase.db.collection('users').doc(userID)
     const userData = await refDoc.get()
     const userWatchList = userData.data().WatchList
-    const userWatchListTitles = Object.keys(userWatchList).map(movieID => {
-      return movieID
+    const userWatchListTitles = Object.keys(userWatchList).map(mediaID => {
+      return mediaID
     })
 
     return userWatchListTitles
