@@ -6,7 +6,8 @@ export default {
         displayName: '',
         email: '',
         avatar: '',
-        uid: ''
+        uid: '',
+        watchList: []
       }
     }
   },
@@ -31,11 +32,17 @@ export default {
         }
         state.user.loggedIn = false
       }
+    },
+    SET_WATCH_LIST: (state, watchList) => {
+      state.user.data.watchList = watchList
     }
   },
   actions: {
     setUser: (context, user) => {
       context.commit('SET_USER', user)
+    },
+    setWatchList: (context, watchList) => {
+      context.commit('SET_WATCH_LIST', watchList)
     }
   },
   getters: {
@@ -59,6 +66,9 @@ export default {
     },
     loggedIn: state => {
       return state.user.loggedIn
+    },
+    getWatchList: state => {
+      return state.user.data.watchList
     }
   }
 }

@@ -25,11 +25,11 @@
 import TheHeader from './layout/TheHeader'
 import TheFooter from './layout/TheFooter'
 import TheSidePanel from './layout/TheSidePanel'
-import mobileCheck from './mixins/mobileCheck'
+import dbClient from './services/dbCalls'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'App',
-  mixins: [mobileCheck],
   components: {
     TheHeader,
     TheFooter,
@@ -40,6 +40,19 @@ export default {
     return {
       drawer: false
     }
+  },
+  computed: {
+    ...mapGetters(['getUID'])
+  },
+  methods: {
+    ...mapActions(['setWatchList'])
+  },
+  created() {
+    dbClient.getUsersWatchList(this.getUID).then(watchList => {
+      if (watchList) {
+        this.setWatchList(watchList)
+      }
+    })
   }
 }
 </script>
