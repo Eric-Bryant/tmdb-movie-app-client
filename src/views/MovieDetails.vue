@@ -4,13 +4,7 @@
       <p>{{ movie.title }}</p>
       <img :src="moviePoster" v-if="movie.poster_path" />
       <p>{{ movie.overview }}</p>
-      <AddRemoveButton
-        v-if="loggedIn"
-        :onList="onList"
-        :mediaInfo="movie"
-        @addedToList="onList = true"
-        @removedFromList="onList = false"
-      />
+      <AddRemoveButton v-if="loggedIn" :onList="onList" :mediaInfo="movie" />
     </div>
     <div v-else>
       <p>Movie Not Found</p>
@@ -36,6 +30,15 @@ export default {
       onList: false
     }
   },
+  computed: {
+    ...mapGetters(['getUID', 'loggedIn', 'getWatchList']),
+    moviePoster() {
+      return `https://image.tmdb.org/t/p/w500/${this.movie.poster_path}`
+    },
+    watchListStatus() {
+      return this.getWatchList.length
+    }
+  },
   watch: {
     $route(to, from) {
       apiClient
@@ -45,10 +48,9 @@ export default {
             this.movie = response.data
             this.movieExists = true
             if (this.loggedIn) {
-              dbClient.getUsersWatchList(this.getUID).then(watchList => {
-                this.onList = watchList.some(val => {
-                  return val == this.movie.id
-                })
+              this.onList = this.getWatchList.some(mediaItem => {
+                const watchListMediaId = Object.keys(mediaItem).join()
+                return this.movie.id == watchListMediaId
               })
             }
           }
@@ -57,12 +59,14 @@ export default {
           console.log(error)
           this.movieExists = false
         })
-    }
-  },
-  computed: {
-    ...mapGetters(['getUID', 'loggedIn']),
-    moviePoster() {
-      return `https://image.tmdb.org/t/p/w500/${this.movie.poster_path}`
+    },
+    watchListStatus() {
+      if (this.loggedIn) {
+        this.onList = this.getWatchList.some(mediaItem => {
+          const watchListMediaId = Object.keys(mediaItem).join()
+          return this.movie.id == watchListMediaId
+        })
+      }
     }
   },
   created() {
@@ -73,12 +77,13 @@ export default {
           this.movie = response.data
           this.movieExists = true
           if (this.loggedIn) {
-            dbClient.getUsersWatchList(this.getUID).then(watchList => {
-              this.onList = watchList.some(val => {
-                return val == this.movie.id
-              })
+            this.onList = this.getWatchList.some(mediaItem => {
+              const watchListMediaId = Object.keys(mediaItem).join()
+              return this.movie.id == watchListMediaId
             })
           }
+        } else {
+          console.log('error getting movie details')
         }
       })
       .catch(error => {

@@ -1,10 +1,10 @@
 import Firebase from '../firebase'
 
 export default {
-  addMediaToWatchList(userID, mediaID, mediaTitle) {
+  addMediaToWatchList(userID, media) {
     const refDoc = Firebase.db.collection('users').doc(userID)
     const watchListUpdate = {}
-    watchListUpdate[`WatchList.${mediaID}.title`] = mediaTitle
+    watchListUpdate[`WatchList.${media.id}`] = media
     refDoc.update(watchListUpdate)
   },
   removeMediaFromWatchList(userID, mediaID) {
@@ -37,10 +37,15 @@ export default {
     const userData = await refDoc.get()
     if (userData.exists) {
       const userWatchList = userData.data().WatchList
-      const userWatchListTitles = Object.keys(userWatchList).map(mediaID => {
+      const userWatchListIds = Object.keys(userWatchList).map(mediaID => {
         return mediaID
       })
-      return userWatchListTitles
+      const watchListArray = userWatchListIds.map(id => {
+        const mediaObject = {}
+        mediaObject[id] = userWatchList[id]
+        return mediaObject
+      })
+      return watchListArray
     } else {
       console.log('user watch list not found')
     }

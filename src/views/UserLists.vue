@@ -32,9 +32,7 @@ export default {
     }
   },
   created() {
-    Firebase.auth.onAuthStateChanged(() => {
-      this.getLists()
-    })
+    this.getLists()
   }
 }
 </script>

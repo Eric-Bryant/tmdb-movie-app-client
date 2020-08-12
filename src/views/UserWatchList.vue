@@ -1,12 +1,11 @@
 <template>
   <div>
     <h1>Your Watch List</h1>
-    <v-layout v-if="userWatchList.length > 0">
+    <v-layout v-if="parsedWatchList.length > 0">
       <MediaCard
-        v-for="media in userWatchList"
+        v-for="media in parsedWatchList"
         :key="media.title"
         :mediaInfo="media"
-        @removeFromList="removeFromList($event)"
       />
     </v-layout>
     <p v-else>Your list is empty</p>
@@ -14,8 +13,6 @@
 </template>
 
 <script>
-import dbClient from '../services/dbCalls'
-import apiClient from '../services/apiCalls'
 import MediaCard from '../components/MediaCard'
 import { mapGetters } from 'vuex'
 
@@ -30,27 +27,16 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUID'])
-  },
-  methods: {
-    async getWatchList() {
-      dbClient.getUsersWatchList(this.getUID).then(watchList => {
-        watchList.map(id => {
-          apiClient.getMovieDetails(id).then(result => {
-            this.userWatchList.push(result.data)
-          })
-        })
-      })
-    },
-    removeFromList(mediaInfo) {
-      this.userWatchList = this.userWatchList.filter(val => {
-        return val.id != mediaInfo.id
+    ...mapGetters(['getUID', 'getWatchList']),
+    parsedWatchList() {
+      return this.getWatchList.map(mediaItem => {
+        const watchListMediaId = Object.keys(mediaItem).join()
+        return mediaItem[watchListMediaId]
       })
     }
   },
-  created() {
-    this.getWatchList()
-  }
+  methods: {},
+  created() {}
 }
 </script>
 

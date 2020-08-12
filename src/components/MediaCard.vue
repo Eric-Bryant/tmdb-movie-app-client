@@ -21,11 +21,7 @@
     <v-spacer></v-spacer>
     <v-card-actions>
       <v-btn color="info" :to="movieLink">Read</v-btn>
-      <AddRemoveButton
-        :onList="onList"
-        :mediaInfo="mediaInfo"
-        @removedFromList="removeThisFromList($event)"
-      />
+      <AddRemoveButton :onList="onList" :mediaInfo="mediaInfo" />
     </v-card-actions>
   </v-card>
 </template>
@@ -58,31 +54,30 @@ export default {
       onList: false
     }
   },
-  computed: {
-    ...mapGetters(['getUID', 'loggedIn']),
-    truncatedDescription() {
-      return (this.movieDescription.substr(0, 160) + '...').trim()
+  watch: {
+    watchListStatus() {
+      if (this.loggedIn) {
+        this.onList = this.getWatchList.some(mediaItem => {
+          const watchListMediaId = Object.keys(mediaItem).join()
+          return this.mediaInfo.id == watchListMediaId
+        })
+      }
     }
   },
-  methods: {
-    async getWatchList() {
-      const watchList = await dbClient.getUsersWatchList(this.getUID)
-      if (watchList) {
-        if (watchList.indexOf(this.mediaInfo.id) > -1) {
-          this.onList = false
-        } else {
-          this.onList = true
-        }
-      } else {
-        console.log('no watchlist')
-      }
+  computed: {
+    ...mapGetters(['getUID', 'loggedIn', 'getWatchList']),
+    truncatedDescription() {
+      return (this.movieDescription.substr(0, 160) + '...').trim()
     },
-    removeThisFromList(mediaInfo) {
-      this.$emit('removeFromList', mediaInfo)
+    watchListStatus() {
+      return this.getWatchList.length
     }
   },
   created() {
-    this.getWatchList()
+    this.onList = this.getWatchList.some(mediaItem => {
+      const watchListMediaId = Object.keys(mediaItem).join()
+      return this.mediaInfo.id == watchListMediaId
+    })
   }
 }
 </script>

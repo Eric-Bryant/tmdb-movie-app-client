@@ -5,7 +5,7 @@
 
 <script>
 import dbClient from '../services/dbCalls'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'AddRemoveButton',
@@ -27,19 +27,14 @@ export default {
     ...mapGetters(['getUID'])
   },
   methods: {
+    ...mapActions(['addMediaToWatchList', 'removeMediaFromWatchList']),
     addToWatchList() {
-      dbClient.addMediaToWatchList(
-        this.getUID,
-        this.mediaInfo.id,
-        this.mediaInfo.title
-      )
-
-      this.$emit('addedToList', this.mediaInfo)
+      dbClient.addMediaToWatchList(this.getUID, this.mediaInfo)
+      this.addMediaToWatchList(this.mediaInfo)
     },
     removeFromWatchList() {
       dbClient.removeMediaFromWatchList(this.getUID, this.mediaInfo.id)
-
-      this.$emit('removedFromList', this.mediaInfo)
+      this.removeMediaFromWatchList(this.mediaInfo)
     }
   }
 }
