@@ -27,7 +27,6 @@
 </template>
 
 <script>
-import dbClient from '../services/dbCalls'
 import AddRemoveButton from '../components/AddRemoveButton'
 import { mapGetters } from 'vuex'
 

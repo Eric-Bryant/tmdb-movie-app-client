@@ -28,7 +28,8 @@ export default {
           displayName: '',
           email: '',
           avatar: '',
-          uid: ''
+          uid: '',
+          watchList: []
         }
         state.user.loggedIn = false
       }

@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import dbClient from '../services/dbCalls'
 import { mapGetters } from 'vuex'
 import AddRemoveButton from '../components/AddRemoveButton'
 import apiClient from '../services/apiCalls'

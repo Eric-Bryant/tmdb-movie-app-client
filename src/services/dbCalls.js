@@ -35,7 +35,7 @@ export default {
   async getUsersWatchList(userID) {
     const refDoc = Firebase.db.collection('users').doc(userID)
     const userData = await refDoc.get()
-    if (userData.exists) {
+    if (userData.exists && userData.data().WatchList) {
       const userWatchList = userData.data().WatchList
       const userWatchListIds = Object.keys(userWatchList).map(mediaID => {
         return mediaID

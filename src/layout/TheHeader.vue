@@ -1,16 +1,15 @@
 <template>
-  <v-app-bar app color="primary" dark dense>
-    <div class="d-flex align-center">
-      <router-link :to="{ name: 'Home' }">
-        <v-img
-          alt="Sakura"
-          class="shrink"
-          contain
-          :src="require('../assets/sakura.svg')"
-          transition="scale-transition"
-          width="40"
-      /></router-link>
-    </div>
+  <v-app-bar app color="primary" dark dense class="app-bar">
+    <router-link :to="{ name: 'Home' }">
+      <v-img
+        alt="Sakura"
+        class="shrink"
+        contain
+        :src="require('../assets/sakura.svg')"
+        transition="scale-transition"
+        width="40"
+    /></router-link>
+
     <v-spacer></v-spacer>
 
     <SearchBar class="d-none d-sm-flex" />
@@ -49,4 +48,9 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss">
+.app-bar > .v-toolbar__content {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+</style>

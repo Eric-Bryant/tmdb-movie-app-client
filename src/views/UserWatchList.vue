@@ -1,13 +1,13 @@
 <template>
   <div>
     <h1>Your Watch List</h1>
-    <v-layout v-if="parsedWatchList.length > 0">
+    <v-row v-if="parsedWatchList.length > 0">
       <MediaCard
         v-for="media in parsedWatchList"
         :key="media.title"
         :mediaInfo="media"
       />
-    </v-layout>
+    </v-row>
     <p v-else>Your list is empty</p>
   </div>
 </template>

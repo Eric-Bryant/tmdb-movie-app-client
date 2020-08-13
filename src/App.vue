@@ -42,19 +42,30 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUID'])
+    ...mapGetters(['getUID', 'loggedIn'])
   },
   methods: {
     ...mapActions(['setWatchList'])
   },
   created() {
-    dbClient.getUsersWatchList(this.getUID).then(watchList => {
-      if (watchList) {
-        this.setWatchList(watchList)
-      }
-    })
+    if (this.loggedIn) {
+      dbClient.getUsersWatchList(this.getUID).then(watchList => {
+        if (watchList) {
+          this.setWatchList(watchList)
+        }
+      })
+    }
   }
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.container {
+  max-width: 1140px;
+  padding: 1rem;
+}
+
+img {
+  max-width: 100%;
+}
+</style>

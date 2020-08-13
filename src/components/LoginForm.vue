@@ -47,6 +47,7 @@
 
 <script>
 import Firebase from '../firebase'
+import dbClient from '../services/dbCalls'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -74,7 +75,22 @@ export default {
   methods: {
     loginGoogle() {
       this.loggingIn = true
-      Firebase.login()
+      const provider = Firebase.googleProvider
+      Firebase.auth
+        .signInWithPopup(provider)
+        .then(function(result) {})
+        .catch(function(error) {
+          this.loggingIn = false
+          const errorCode = error.code
+          const errorMessage = error.message
+          const email = error.email
+          const credential = error.credential
+          console.log(errorCode, errorMessage, email, credential)
+        })
+        .finally(() => {
+          this.loggingIn = false
+          this.$router.push({ name: 'Home' })
+        })
     },
     login() {
       this.loggingIn = true

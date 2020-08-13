@@ -63,7 +63,7 @@
 
 <script>
 import Firebase from '../firebase'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'RegistrationForm',
@@ -90,6 +90,7 @@ export default {
     ...mapGetters(['loggedIn'])
   },
   methods: {
+    ...mapActions(['setUser']),
     signUp() {
       this.loggingIn = true
       Firebase.auth
@@ -103,7 +104,7 @@ export default {
             })
             .then(() => {
               console.log('display name updated')
-              this.$store.dispatch('setUser', result.user)
+              this.setUser(result.user)
             })
             .catch(error => {
               console.log(error)
@@ -112,7 +113,7 @@ export default {
           Firebase.db
             .collection('users')
             .doc(result.user.uid)
-            .set({ name: `${this.firstName} ${this.lastName}` })
+            .set({})
 
           this.$router.push({ name: 'Home' })
         })
@@ -126,7 +127,40 @@ export default {
     },
     loginGoogle() {
       this.loggingIn = true
-      Firebase.login()
+      const provider = Firebase.googleProvider
+      Firebase.auth
+        .signInWithPopup(provider)
+        .then(result => {
+          this.loggingIn = false
+
+          this.setUser(result.user)
+
+          Firebase.db
+            .collection('users')
+            .doc(result.user.uid)
+            .get()
+            .then(doc => {
+              if (!doc.exists) {
+                Firebase.db
+                  .collection('users')
+                  .doc(result.user.uid)
+                  .set({})
+              } else {
+                console.log('user already exists in database')
+              }
+            })
+        })
+        .catch(function(error) {
+          this.loggingIn = false
+          const errorCode = error.code
+          const errorMessage = error.message
+          const email = error.email
+          const credential = error.credential
+          console.log(errorCode, errorMessage, email, credential)
+        })
+        .finally(() => {
+          this.$router.push({ name: 'Home' })
+        })
     },
     reset() {
       this.$refs.form.reset()
