@@ -194,7 +194,7 @@ export default {
   display: flex;
 
   @media screen and (min-width: 600px) {
-    width: 320px;
+    width: 75%;
   }
 
   @media screen and (min-width: 1024px) {
