@@ -1,15 +1,15 @@
 <template>
-  <div>
-    <RegistrationForm />
-  </div>
+  <v-container fill-height>
+    <AccountForm formType="Register" />
+  </v-container>
 </template>
 
 <script>
-import RegistrationForm from '../components/RegistrationForm'
+import AccountForm from '../components/AccountForm'
 
 export default {
   name: 'CreateAccount',
-  components: { RegistrationForm },
+  components: { AccountForm },
   data() {
     return {}
   }

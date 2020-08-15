@@ -1,15 +1,16 @@
 <template>
-  <div>
-    <div v-if="movieExists">
-      <p>{{ movie.title }}</p>
-      <img :src="moviePoster" v-if="movie.poster_path" />
-      <p>{{ movie.overview }}</p>
-      <AddRemoveButton v-if="loggedIn" :onList="onList" :mediaInfo="movie" />
+  <v-container>
+    <div v-if="!loadingDetails">
+      <div v-if="movieExists">
+        <p>{{ movie.title }}</p>
+        <img :src="moviePoster" v-if="movie.poster_path" />
+        <p>{{ movie.overview }}</p>
+        <AddRemoveButton v-if="loggedIn" :onList="onList" :mediaInfo="movie" />
+      </div>
+      <p v-else>Movie Not Found</p>
     </div>
-    <div v-else>
-      <p>Movie Not Found</p>
-    </div>
-  </div>
+    <p v-else>Loading movie details...</p>
+  </v-container>
 </template>
 
 <script>
@@ -26,7 +27,8 @@ export default {
     return {
       movie: {},
       movieExists: false,
-      onList: false
+      onList: false,
+      loadingDetails: true
     }
   },
   computed: {
@@ -40,6 +42,7 @@ export default {
   },
   watch: {
     $route(to, from) {
+      this.loadingDetails = true
       apiClient
         .getMovieDetails(to.params.id)
         .then(response => {
@@ -56,7 +59,11 @@ export default {
         })
         .catch(error => {
           console.log(error)
+          this.loadingDetails = false
           this.movieExists = false
+        })
+        .finally(() => {
+          this.loadingDetails = false
         })
     },
     watchListStatus() {
@@ -88,6 +95,9 @@ export default {
       .catch(error => {
         console.log(error)
         this.movieExists = false
+      })
+      .finally(() => {
+        this.loadingDetails = false
       })
   }
 }

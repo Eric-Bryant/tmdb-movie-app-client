@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container>
     <h1>Your Lists</h1>
     <div v-if="userLists.length > 0">
       <p v-for="list in userLists" :key="list.index">
@@ -7,7 +7,7 @@
       </p>
     </div>
     <p v-else>Your list is empty</p>
-  </div>
+  </v-container>
 </template>
 
 <script>

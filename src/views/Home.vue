@@ -1,5 +1,7 @@
 <template>
-  <WelcomeUser />
+  <v-container>
+    <WelcomeUser />
+  </v-container>
 </template>
 
 <script>

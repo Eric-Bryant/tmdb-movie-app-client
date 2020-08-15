@@ -1,19 +1,17 @@
 <template>
-  <div>
-    <LoginForm />
-  </div>
+  <v-container fill-height>
+    <AccountForm formType="Login" />
+  </v-container>
 </template>
 
 <script>
-import LoginForm from '../components/LoginForm'
+import AccountForm from '../components/AccountForm'
 
 export default {
   name: 'Login',
-  components: { LoginForm },
+  components: { AccountForm },
   data() {
     return {}
   }
 }
 </script>
-
-<style></style>

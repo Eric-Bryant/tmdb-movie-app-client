@@ -41,7 +41,7 @@ const routes = [
       requiresAuth: true
     },
     component: () =>
-      import(/* webpackChunkName: "userlists" */ '../views/UserWatchList.vue')
+      import(/* webpackChunkName: "watchlist" */ '../views/UserWatchList.vue')
   },
   {
     path: '/login',

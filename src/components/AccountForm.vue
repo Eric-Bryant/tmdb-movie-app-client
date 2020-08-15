@@ -1,11 +1,15 @@
 <template>
-  <v-card max-width="320px" class="mx-auto mt-5">
-    <v-card-title>{{
+  <v-card class="mx-auto account-form-card">
+    <v-card-title v-if="formType == 'Login'">{{
+      loggedIn ? 'You already are logged in' : 'Log In'
+    }}</v-card-title>
+    <v-card-title v-else>{{
       loggedIn ? 'You already are logged in' : 'Create an Account'
     }}</v-card-title>
     <v-card-text>
       <v-form ref="form" v-model="valid" v-if="!loggedIn">
         <v-text-field
+          v-if="formType == 'Register'"
           v-model="firstName"
           label="First Name"
           required
@@ -14,6 +18,7 @@
           class="mb-2"
         ></v-text-field>
         <v-text-field
+          v-if="formType == 'Register'"
           v-model="lastName"
           label="Last Name"
           required
@@ -40,6 +45,16 @@
           required
         ></v-text-field>
         <v-btn
+          v-if="formType == 'Login'"
+          block
+          color="primary"
+          @click="login"
+          :disabled="!valid"
+          :loading="loggingIn"
+          >Log In</v-btn
+        >
+        <v-btn
+          v-else
           block
           color="primary"
           @click="signUp"
@@ -47,12 +62,22 @@
           :loading="loggingIn"
           >Sign Up</v-btn
         >
-        <v-btn block color="warning" class="mt-2" @click="reset">Reset</v-btn>
+        <v-btn block class="mt-2" color="warning" @click="reset">Reset</v-btn>
         <v-btn
+          v-if="formType == 'Login'"
+          class="mt-2"
           block
           color="primary"
-          class="mt-2"
           @click="loginGoogle"
+          :loading="loggingIn"
+          ><v-icon left>mdi-google</v-icon>Login w/ Google</v-btn
+        >
+        <v-btn
+          v-else
+          class="mt-2"
+          block
+          color="primary"
+          @click="signUpGoogle"
           :loading="loggingIn"
           ><v-icon left>mdi-google</v-icon>Create Account w/ Google</v-btn
         >
@@ -63,10 +88,17 @@
 
 <script>
 import Firebase from '../firebase'
+import dbClient from '../services/dbCalls'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  name: 'RegistrationForm',
+  name: 'AccountForm',
+  props: {
+    formType: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
       valid: false,
@@ -91,6 +123,40 @@ export default {
   },
   methods: {
     ...mapActions(['setUser']),
+    loginGoogle() {
+      this.loggingIn = true
+      const provider = Firebase.googleProvider
+      Firebase.auth
+        .signInWithPopup(provider)
+        .then(function(result) {})
+        .catch(function(error) {
+          this.loggingIn = false
+          const errorCode = error.code
+          const errorMessage = error.message
+          const email = error.email
+          const credential = error.credential
+          console.log(errorCode, errorMessage, email, credential)
+        })
+        .finally(() => {
+          this.loggingIn = false
+          this.$router.push({ name: 'Home' })
+        })
+    },
+    login() {
+      this.loggingIn = true
+      Firebase.auth
+        .signInWithEmailAndPassword(this.email, this.password)
+        .then(result => {
+          this.loggingIn = false
+          this.$router.push({ name: 'Home' })
+        })
+        .catch(error => {
+          this.loggingIn = false
+          var errorCode = error.code
+          var errorMessage = error.message
+          console.log(errorCode, errorMessage)
+        })
+    },
     signUp() {
       this.loggingIn = true
       Firebase.auth
@@ -125,7 +191,7 @@ export default {
           // ...
         })
     },
-    loginGoogle() {
+    signUpGoogle() {
       this.loggingIn = true
       const provider = Firebase.googleProvider
       Firebase.auth
@@ -150,7 +216,7 @@ export default {
               }
             })
         })
-        .catch(function(error) {
+        .catch(error => {
           this.loggingIn = false
           const errorCode = error.code
           const errorMessage = error.message
@@ -169,4 +235,9 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.account-form-card {
+  max-width: 320px;
+  width: 100%;
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container>
     <h1>Your Watch List</h1>
     <v-row v-if="parsedWatchList.length > 0">
       <MediaCard
@@ -9,7 +9,7 @@
       />
     </v-row>
     <p v-else>Your list is empty</p>
-  </div>
+  </v-container>
 </template>
 
 <script>
