@@ -1,15 +1,60 @@
 <template>
-  <v-container>
+  <v-container
+    :fill-height="loadingDetails || !movieExists"
+    :class="{ 'justify-center': loadingDetails || !movieExists }"
+  >
     <div v-if="!loadingDetails">
-      <div v-if="movieExists">
-        <p>{{ movie.title }}</p>
-        <img :src="moviePoster" v-if="movie.poster_path" />
-        <p>{{ movie.overview }}</p>
-        <AddRemoveButton v-if="loggedIn" :onList="onList" :mediaInfo="movie" />
+      <MediaTrailer
+        mediaType="Movie"
+        :mediaID="movie.id"
+        width="100%"
+        height="315"
+      />
+      <v-row v-if="movieExists" no-gutters>
+        <v-col cols="12" sm="3" class="pa-xs-0 pr-sm-4"
+          ><v-img :src="moviePoster" v-if="movie.poster_path"
+        /></v-col>
+        <v-col cols="12" sm="9" class="pa-xs-0 px-sm-4">
+          <div v-if="movie.genres.length > 0" class="mt-2 mt-sm-0">
+            <v-chip
+              v-for="genre in movie.genres"
+              :key="genre.id"
+              :to="`/genre/${genre.id}`"
+              color="secondary"
+              class="mr-2 mb-2 genre-chips"
+              >{{ genre.name }}</v-chip
+            >
+          </div>
+          <h1>
+            {{ movie.title }} ({{
+              movie.release_date ? movie.release_date.split('-')[0] : 'N/A'
+            }})
+          </h1>
+          <p>{{ movie.overview }}</p>
+          <AddRemoveButton
+            v-if="loggedIn"
+            :onList="onList"
+            :mediaInfo="movie"
+          />
+        </v-col>
+      </v-row>
+      <div v-else class="align-center">
+        <h1 class="text-uppercase">Movie Not Found</h1>
       </div>
-      <p v-else>Movie Not Found</p>
     </div>
-    <p v-else>Loading movie details...</p>
+    <div v-else class="d-flex align-center flex-column">
+      <h1 class="mb-2 text-uppercase">Loading details...</h1>
+      <div class="lds-roller">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
   </v-container>
 </template>
 
@@ -17,11 +62,13 @@
 import { mapGetters } from 'vuex'
 import AddRemoveButton from '../components/AddRemoveButton'
 import apiClient from '../services/apiCalls'
+import MediaTrailer from '../components/MediaTrailer'
 
 export default {
   name: 'MovieDetails',
   components: {
-    AddRemoveButton
+    AddRemoveButton,
+    MediaTrailer
   },
   data() {
     return {
@@ -103,4 +150,14 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.genre-chips {
+  &:first-child {
+    margin-left: 0px !important;
+  }
+
+  &:last-child {
+    margin-right: 0px !important;
+  }
+}
+</style>

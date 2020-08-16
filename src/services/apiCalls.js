@@ -24,5 +24,8 @@ export default {
   },
   getMovieDetails(movieID) {
     return apiClient.get(`/movie/${movieID}`)
+  },
+  getMovieTrailers(movieID) {
+    return apiClient.get(`/movie/${movieID}/videos`)
   }
 }

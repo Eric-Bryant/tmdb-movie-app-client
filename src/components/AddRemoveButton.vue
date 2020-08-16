@@ -1,6 +1,8 @@
 <template>
-  <v-btn v-if="onList" @click="removeFromWatchList">Remove</v-btn>
-  <v-btn v-else @click="addToWatchList">Add</v-btn>
+  <v-btn v-if="onList" @click="removeFromWatchList" color="warning"
+    >Remove</v-btn
+  >
+  <v-btn v-else @click="addToWatchList" color="primary">Add</v-btn>
 </template>
 
 <script>
