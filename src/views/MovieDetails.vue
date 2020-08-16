@@ -10,34 +10,39 @@
         width="100%"
         height="315"
       />
-      <v-row v-if="movieExists" no-gutters>
-        <v-col cols="12" sm="3" class="pa-xs-0 pr-sm-4"
-          ><v-img :src="moviePoster" v-if="movie.poster_path"
-        /></v-col>
-        <v-col cols="12" sm="9" class="pa-xs-0 px-sm-4">
-          <div v-if="movie.genres.length > 0" class="mt-2 mt-sm-0">
-            <v-chip
-              v-for="genre in movie.genres"
-              :key="genre.id"
-              :to="`/genre/${genre.id}`"
-              color="secondary"
-              class="mr-2 mb-2 genre-chips"
-              >{{ genre.name }}</v-chip
-            >
-          </div>
-          <h1>
-            {{ movie.title }} ({{
-              movie.release_date ? movie.release_date.split('-')[0] : 'N/A'
-            }})
-          </h1>
-          <p>{{ movie.overview }}</p>
-          <AddRemoveButton
-            v-if="loggedIn"
-            :onList="onList"
-            :mediaInfo="movie"
-          />
-        </v-col>
-      </v-row>
+      <div v-if="movieExists" class="details-container">
+        <v-row>
+          <v-col cols="5" sm="3"
+            ><v-img :src="moviePoster" v-if="movie.poster_path"
+          /></v-col>
+          <v-col cols="7" sm="9">
+            <v-slide-group v-if="movie.genres.length > 0" class="mt-2 mt-sm-0">
+              <v-slide-item v-for="genre in movie.genres" :key="genre.id">
+                <v-chip
+                  :to="`/genre/${genre.id}`"
+                  color="secondary"
+                  class="mr-2 mb-2 genre-chips"
+                  >{{ genre.name }}</v-chip
+                >
+              </v-slide-item>
+            </v-slide-group>
+            <h1 class="movie-title">
+              {{ movie.title }}
+              <sup class="text-caption"
+                >({{
+                  movie.release_date ? movie.release_date.split('-')[0] : 'N/A'
+                }})</sup
+              >
+            </h1>
+            <p>{{ movie.overview }}</p>
+            <AddRemoveButton
+              v-if="loggedIn"
+              :onList="onList"
+              :mediaInfo="movie"
+            />
+          </v-col>
+        </v-row>
+      </div>
       <div v-else class="align-center">
         <h1 class="text-uppercase">Movie Not Found</h1>
       </div>
@@ -151,6 +156,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.container {
+  padding: 0;
+
+  @media screen and (min-width: 600px) {
+    padding: 0 1rem;
+  }
+}
+
+.details-container {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+
+  @media screen and (min-width: 600px) {
+    padding-left: 0rem;
+    padding-right: 0rem;
+  }
+}
+
 .genre-chips {
   &:first-child {
     margin-left: 0px !important;
@@ -158,6 +181,14 @@ export default {
 
   &:last-child {
     margin-right: 0px !important;
+  }
+}
+
+.movie-title {
+  font-size: 1.5rem;
+
+  @media screen and (min-width: 600px) {
+    font-size: 2em;
   }
 }
 </style>
