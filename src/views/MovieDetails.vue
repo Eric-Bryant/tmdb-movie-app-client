@@ -1,22 +1,37 @@
 <template>
-  <v-container
-    :fill-height="loadingDetails || !movieExists"
-    :class="{ 'justify-center': loadingDetails || !movieExists }"
-  >
-    <div v-if="!loadingDetails">
+  <div v-if="movieExists && !loadingDetails">
+    <v-container class="d-xs-block d-sm-none trailer-container">
       <MediaTrailer
         mediaType="Movie"
         :mediaID="movie.id"
         width="100%"
         height="315"
       />
-      <div v-if="movieExists" class="details-container">
+    </v-container>
+    <div class="details-container">
+      <v-container>
+        <v-slide-group
+          v-if="movie.genres.length > 0"
+          class="pt-2 d-xs-block d-sm-none"
+        >
+          <v-slide-item v-for="genre in movie.genres" :key="genre.id">
+            <v-chip
+              :to="`/genre/${genre.id}`"
+              color="secondary"
+              class="mr-2 mb-2 genre-chips"
+              >{{ genre.name }}</v-chip
+            >
+          </v-slide-item>
+        </v-slide-group>
         <v-row>
           <v-col cols="5" sm="3"
             ><v-img :src="moviePoster" v-if="movie.poster_path"
           /></v-col>
           <v-col cols="7" sm="9">
-            <v-slide-group v-if="movie.genres.length > 0" class="mt-2 mt-sm-0">
+            <v-slide-group
+              v-if="movie.genres.length > 0"
+              class="mt-2 mt-sm-0 d-none d-sm-block"
+            >
               <v-slide-item v-for="genre in movie.genres" :key="genre.id">
                 <v-chip
                   :to="`/genre/${genre.id}`"
@@ -34,7 +49,8 @@
                 }})</sup
               >
             </h1>
-            <p>{{ movie.overview }}</p>
+            <p class="movie-overview">{{ movie.overview }}</p>
+            <MediaCredits :mediaID="movie.id" mediaType="Movie" />
             <AddRemoveButton
               v-if="loggedIn"
               :onList="onList"
@@ -42,12 +58,20 @@
             />
           </v-col>
         </v-row>
-      </div>
-      <div v-else class="align-center">
-        <h1 class="text-uppercase">Movie Not Found</h1>
-      </div>
+      </v-container>
     </div>
-    <div v-else class="d-flex align-center flex-column">
+  </div>
+  <v-container
+    fill-height
+    class="justify-center"
+    v-else-if="!loadingDetails && !movieExists"
+  >
+    <div class="align-center">
+      <h1 class="text-uppercase">Movie Not Found</h1>
+    </div>
+  </v-container>
+  <v-container fill-height class="justify-center" v-else>
+    <div class="d-flex align-center flex-column">
       <h1 class="mb-2 text-uppercase">Loading details...</h1>
       <div class="lds-roller">
         <div></div>
@@ -68,12 +92,14 @@ import { mapGetters } from 'vuex'
 import AddRemoveButton from '../components/AddRemoveButton'
 import apiClient from '../services/apiCalls'
 import MediaTrailer from '../components/MediaTrailer'
+import MediaCredits from '../components/MediaCredits'
 
 export default {
   name: 'MovieDetails',
   components: {
     AddRemoveButton,
-    MediaTrailer
+    MediaTrailer,
+    MediaCredits
   },
   data() {
     return {
@@ -167,11 +193,15 @@ export default {
 .details-container {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+  background: #efefef;
 
   @media screen and (min-width: 600px) {
-    padding-left: 0rem;
-    padding-right: 0rem;
+    padding: 1rem 0;
   }
+}
+
+.trailer-container {
+  height: 315px;
 }
 
 .genre-chips {
@@ -189,6 +219,14 @@ export default {
 
   @media screen and (min-width: 600px) {
     font-size: 2em;
+  }
+}
+
+.movie-overview {
+  font-size: 0.875em;
+
+  @media screen and (min-width: 600px) {
+    font-size: 1em;
   }
 }
 </style>

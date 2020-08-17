@@ -1,15 +1,13 @@
 <template>
-  <div>
-    <iframe
-      v-if="mediaVideos"
-      :width="width"
-      :height="height"
-      :src="`https://www.youtube.com/embed/${youtubeID}`"
-      frameborder="0"
-      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen
-    ></iframe>
-  </div>
+  <iframe
+    v-if="mediaVideos"
+    :width="width"
+    :height="height"
+    :src="`https://www.youtube.com/embed/${youtubeID}`"
+    frameborder="0"
+    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen
+  ></iframe>
 </template>
 
 <script>

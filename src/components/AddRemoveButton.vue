@@ -2,9 +2,7 @@
   <v-btn v-if="onList" @click="removeFromWatchList" color="warning"
     >Remove</v-btn
   >
-  <v-btn v-else @click="addToWatchList" color="primary"
-    >Add To Watch List</v-btn
-  >
+  <v-btn v-else @click="addToWatchList" color="primary">Add</v-btn>
 </template>
 
 <script>

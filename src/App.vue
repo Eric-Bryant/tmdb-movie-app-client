@@ -68,6 +68,10 @@ iframe {
   max-width: 100%;
 }
 
+.row {
+  margin: 0;
+}
+
 .lds-roller {
   display: inline-block;
   position: relative;
