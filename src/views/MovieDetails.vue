@@ -185,7 +185,7 @@ export default {
 }
 
 .movie-title {
-  font-size: 1.5rem;
+  font-size: 1.25em;
 
   @media screen and (min-width: 600px) {
     font-size: 2em;
