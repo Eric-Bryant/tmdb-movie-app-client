@@ -2,8 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home'
 import Firebase from '../firebase'
-import store from '../store/index'
-import dbClient from '../services/dbCalls'
 
 Vue.use(VueRouter)
 
@@ -16,9 +14,6 @@ const routes = [
   {
     path: '/movie/:id',
     name: 'MovieDetails',
-    meta: {
-      requiresDbCheck: true
-    },
     component: () =>
       import(/* webpackChunkName: "moviedetails" */ '../views/MovieDetails.vue')
   },
@@ -43,8 +38,7 @@ const routes = [
     path: '/my-lists/watch-list',
     name: 'UserWatchList',
     meta: {
-      requiresAuth: true,
-      requiresDbCheck: true
+      requiresAuth: true
     },
     component: () =>
       import(/* webpackChunkName: "watchlist" */ '../views/UserWatchList.vue')
@@ -64,16 +58,6 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(x => x.meta.requiresAuth)
-  const requiresDbCheck = to.matched.some(x => x.meta.requiresDbCheck)
-
-  if (store.getters.loggedIn && requiresDbCheck) {
-    dbClient.getUsersWatchList(store.getters.getUID).then(watchList => {
-      if (watchList) {
-        console.log('received data from database')
-        store.dispatch('setWatchList', watchList)
-      }
-    })
-  }
 
   if (requiresAuth && !Firebase.auth.currentUser) {
     next('/login')

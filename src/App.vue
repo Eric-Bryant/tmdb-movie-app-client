@@ -23,8 +23,8 @@
 import TheHeader from './layout/TheHeader'
 import TheFooter from './layout/TheFooter'
 import TheSidePanel from './layout/TheSidePanel'
-import dbClient from './services/dbCalls'
 import { mapGetters, mapActions } from 'vuex'
+import Firebase from './firebase'
 
 export default {
   name: 'App',
@@ -47,11 +47,23 @@ export default {
   },
   created() {
     if (this.loggedIn) {
-      dbClient.getUsersWatchList(this.getUID).then(watchList => {
-        if (watchList) {
-          this.setWatchList(watchList)
-        }
-      })
+      Firebase.db
+        .collection('users')
+        .doc(this.getUID)
+        .onSnapshot(snapshot => {
+          if (snapshot.exists && snapshot.data().WatchList) {
+            const userWatchList = snapshot.data().WatchList
+            const userWatchListIds = Object.keys(userWatchList).map(mediaID => {
+              return mediaID
+            })
+            const watchListArray = userWatchListIds.map(id => {
+              const mediaObject = {}
+              mediaObject[id] = userWatchList[id]
+              return mediaObject
+            })
+            this.setWatchList(watchListArray)
+          }
+        })
     }
   }
 }
