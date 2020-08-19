@@ -13,6 +13,18 @@ export default {
       [`watchList.onList.${mediaID}`]: Firebase.dbDelete.delete()
     })
   },
+  addToWatchedList(userID, media) {
+    const refDoc = Firebase.db.collection('lists').doc(userID)
+    const watchedListUpdate = {}
+    watchedListUpdate[`watched.onList.${media.id}`] = media
+    refDoc
+      .update({
+        [`watchList.onList.${media.id}`]: Firebase.dbDelete.delete()
+      })
+      .then(() => {
+        refDoc.update(watchedListUpdate)
+      })
+  },
   async getUsersLists(userID) {
     const refDoc = Firebase.db.collection('lists').doc(userID)
     const userData = await refDoc.get()
@@ -28,24 +40,6 @@ export default {
       return listsInfo
     } else {
       console.log('No user lists found')
-    }
-  },
-  async getUsersWatchList(userID) {
-    const refDoc = Firebase.db.collection('lists').doc(userID)
-    const userData = await refDoc.get()
-    if (userData.exists && userData.data().WatchList) {
-      const userWatchList = userData.data().WatchList
-      const userWatchListIds = Object.keys(userWatchList).map(mediaID => {
-        return mediaID
-      })
-      const watchListArray = userWatchListIds.map(id => {
-        const mediaObject = {}
-        mediaObject[id] = userWatchList[id]
-        return mediaObject
-      })
-      return watchListArray
-    } else {
-      console.log('user watch list not found')
     }
   }
 }

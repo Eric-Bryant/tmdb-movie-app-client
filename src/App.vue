@@ -40,10 +40,20 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUID', 'loggedIn'])
+    ...mapGetters(['getUID', 'loggedIn', 'getWatchList', 'getWatchedList']),
+    storeWatchedListIds() {
+      return this.getWatchedList.map(title => {
+        return Object.keys(title).join()
+      })
+    },
+    storeWatchListIds() {
+      return this.getWatchList.map(title => {
+        return Object.keys(title).join()
+      })
+    }
   },
   methods: {
-    ...mapActions(['setWatchList'])
+    ...mapActions(['setWatchList', 'setWatchedList'])
   },
   created() {
     if (this.loggedIn) {
@@ -51,17 +61,46 @@ export default {
         .collection('lists')
         .doc(this.getUID)
         .onSnapshot(snapshot => {
-          if (snapshot.exists && snapshot.data().watchList.onList) {
+          if (snapshot.exists) {
             const userWatchList = snapshot.data().watchList.onList
+            const userWatchedList = snapshot.data().watched.onList
             const userWatchListIds = Object.keys(userWatchList).map(mediaID => {
               return mediaID
             })
+
+            const userWatchedListIds = Object.keys(userWatchedList).map(
+              mediaID => {
+                return mediaID
+              }
+            )
+
             const watchListArray = userWatchListIds.map(id => {
               const mediaObject = {}
               mediaObject[id] = userWatchList[id]
               return mediaObject
             })
-            this.setWatchList(watchListArray)
+
+            const watchedListArray = userWatchedListIds.map(id => {
+              const mediaObject = {}
+              mediaObject[id] = userWatchedList[id]
+              return mediaObject
+            })
+
+            if (
+              JSON.stringify(this.storeWatchListIds) !=
+              JSON.stringify(userWatchListIds)
+            ) {
+              console.log('watch list changed')
+              this.setWatchList(watchListArray)
+            }
+
+            if (
+              JSON.stringify(this.storeWatchedListIds) !=
+              JSON.stringify(userWatchedListIds)
+            ) {
+              console.log('watched list changed')
+              this.setWatchedList(watchedListArray)
+            }
           }
         })
     }

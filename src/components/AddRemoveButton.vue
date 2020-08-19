@@ -1,7 +1,8 @@
 <template>
-  <v-btn v-if="onList" @click="removeFromWatchList" color="warning"
-    >Remove</v-btn
-  >
+  <div v-if="onList">
+    <v-btn @click="removeFromWatchList" color="warning">Remove</v-btn>
+    <v-btn @click="addToWatched" color="success">Watched</v-btn>
+  </div>
   <v-btn v-else @click="addToWatchList" color="primary">Add</v-btn>
 </template>
 
@@ -29,7 +30,11 @@ export default {
     ...mapGetters(['getUID'])
   },
   methods: {
-    ...mapActions(['addMediaToWatchList', 'removeMediaFromWatchList']),
+    ...mapActions([
+      'addMediaToWatchList',
+      'removeMediaFromWatchList',
+      'addToWatchedList'
+    ]),
     addToWatchList() {
       dbClient.addMediaToWatchList(this.getUID, this.mediaInfo)
       this.addMediaToWatchList(this.mediaInfo)
@@ -37,6 +42,12 @@ export default {
     removeFromWatchList() {
       dbClient.removeMediaFromWatchList(this.getUID, this.mediaInfo.id)
       this.removeMediaFromWatchList(this.mediaInfo)
+    },
+    addToWatched() {
+      dbClient.addToWatchedList(this.getUID, this.mediaInfo)
+      this.removeMediaFromWatchList(this.mediaInfo).then(() => {
+        this.addToWatchedList(this.mediaInfo)
+      })
     }
   }
 }
