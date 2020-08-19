@@ -177,9 +177,18 @@ export default {
             })
 
           Firebase.db
-            .collection('users')
+            .collection('lists')
             .doc(result.user.uid)
-            .set({})
+            .set({
+              watchList: {
+                name: 'Watch List',
+                onList: {}
+              },
+              watched: {
+                name: 'Watched',
+                onList: {}
+              }
+            })
 
           this.$router.push({ name: 'Home' })
         })
@@ -202,15 +211,24 @@ export default {
           this.setUser(result.user)
 
           Firebase.db
-            .collection('users')
+            .collection('lists')
             .doc(result.user.uid)
             .get()
             .then(doc => {
               if (!doc.exists) {
                 Firebase.db
-                  .collection('users')
+                  .collection('lists')
                   .doc(result.user.uid)
-                  .set({})
+                  .set({
+                    watchList: {
+                      name: 'Watch List',
+                      onList: {}
+                    },
+                    watched: {
+                      name: 'Watched',
+                      onList: {}
+                    }
+                  })
               } else {
                 console.log('user already exists in database')
               }

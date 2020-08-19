@@ -48,11 +48,11 @@ export default {
   created() {
     if (this.loggedIn) {
       Firebase.db
-        .collection('users')
+        .collection('lists')
         .doc(this.getUID)
         .onSnapshot(snapshot => {
-          if (snapshot.exists && snapshot.data().WatchList) {
-            const userWatchList = snapshot.data().WatchList
+          if (snapshot.exists && snapshot.data().watchList.onList) {
+            const userWatchList = snapshot.data().watchList.onList
             const userWatchListIds = Object.keys(userWatchList).map(mediaID => {
               return mediaID
             })

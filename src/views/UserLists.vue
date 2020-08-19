@@ -3,7 +3,9 @@
     <h1>Your Lists</h1>
     <div v-if="userLists.length > 0">
       <p v-for="list in userLists" :key="list.index">
-        <v-btn :to="{ name: 'UserWatchList' }"> {{ list }}</v-btn>
+        <v-btn :to="{ name: 'UserWatchList' }">
+          {{ list.name }}: {{ list.length }}</v-btn
+        >
       </p>
     </div>
   </v-container>
