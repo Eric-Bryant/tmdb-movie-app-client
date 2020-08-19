@@ -32,7 +32,6 @@ export default {
       apiClient.getMovieCredits(this.mediaID).then(result => {
         if (result.data) {
           this.mediaCredits = result.data
-
           this.mediaCredits.crew.map(crewMember => {
             if (crewMember.job == 'Director') {
               this.movieDirector = crewMember

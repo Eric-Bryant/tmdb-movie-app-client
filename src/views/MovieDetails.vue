@@ -1,4 +1,5 @@
 <template>
+  <!-- Loading done & movie exists -->
   <div v-if="movieExists && !loadingDetails">
     <v-container class="d-xs-block d-sm-none trailer-container">
       <MediaTrailer
@@ -51,16 +52,29 @@
             </h1>
             <p class="movie-overview">{{ movie.overview }}</p>
             <MediaCredits :mediaID="movie.id" mediaType="Movie" />
-            <AddRemoveButton
-              v-if="loggedIn"
-              :onList="onList"
-              :mediaInfo="movie"
-            />
+            <div class="d-flex align-center">
+              <v-progress-circular
+                :color="movieRating"
+                rotate="270"
+                size="64"
+                width="5"
+                :value="movie.vote_average * 10"
+                >{{ movie.vote_average * 10 }}%</v-progress-circular
+              >
+              <AddRemoveButton
+                class="ml-2"
+                v-if="loggedIn"
+                :onList="onList"
+                :mediaInfo="movie"
+                rounded="true"
+              />
+            </div>
           </v-col>
         </v-row>
       </v-container>
     </div>
   </div>
+  <!-- Loading done & Movie not found -->
   <v-container
     fill-height
     class="justify-center"
@@ -70,19 +84,11 @@
       <h1 class="text-uppercase">Movie Not Found</h1>
     </div>
   </v-container>
+  <!-- Loading -->
   <v-container fill-height class="justify-center" v-else>
     <div class="d-flex align-center flex-column">
       <h1 class="mb-2 text-uppercase">Loading details...</h1>
-      <div class="lds-roller">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
+      <LoadingRoller />
     </div>
   </v-container>
 </template>
@@ -93,13 +99,15 @@ import AddRemoveButton from '../components/AddRemoveButton'
 import apiClient from '../services/apiCalls'
 import MediaTrailer from '../components/MediaTrailer'
 import MediaCredits from '../components/MediaCredits'
+import LoadingRoller from '../components/LoadingRoller'
 
 export default {
   name: 'MovieDetails',
   components: {
     AddRemoveButton,
     MediaTrailer,
-    MediaCredits
+    MediaCredits,
+    LoadingRoller
   },
   data() {
     return {
@@ -116,33 +124,21 @@ export default {
     },
     watchListStatus() {
       return this.getWatchList.length
+    },
+    movieRating() {
+      if (this.movie.vote_average < 5) {
+        return 'red'
+      } else if (this.movie.vote_average < 8) {
+        return 'warning'
+      } else {
+        return 'success'
+      }
     }
   },
   watch: {
     $route(to, from) {
       this.loadingDetails = true
-      apiClient
-        .getMovieDetails(to.params.id)
-        .then(response => {
-          if (response.status == 200) {
-            this.movie = response.data
-            this.movieExists = true
-            if (this.loggedIn) {
-              this.onList = this.getWatchList.some(mediaItem => {
-                const watchListMediaId = Object.keys(mediaItem).join()
-                return this.movie.id == watchListMediaId
-              })
-            }
-          }
-        })
-        .catch(error => {
-          console.log(error)
-          this.loadingDetails = false
-          this.movieExists = false
-        })
-        .finally(() => {
-          this.loadingDetails = false
-        })
+      this.getMovieDetails(to.params.id)
     },
     watchListStatus() {
       if (this.loggedIn) {
@@ -153,30 +149,35 @@ export default {
       }
     }
   },
-  created() {
-    apiClient
-      .getMovieDetails(this.$route.params.id)
-      .then(response => {
-        if (response.status == 200) {
-          this.movie = response.data
-          this.movieExists = true
-          if (this.loggedIn) {
-            this.onList = this.getWatchList.some(mediaItem => {
-              const watchListMediaId = Object.keys(mediaItem).join()
-              return this.movie.id == watchListMediaId
-            })
+  methods: {
+    getMovieDetails(mediaID) {
+      apiClient
+        .getMovieDetails(mediaID)
+        .then(response => {
+          if (response.status == 200) {
+            this.movie = response.data
+            this.movieExists = true
+            if (this.loggedIn) {
+              this.onList = this.getWatchList.some(mediaItem => {
+                const watchListMediaId = Object.keys(mediaItem).join()
+                return this.movie.id == watchListMediaId
+              })
+            }
+          } else {
+            console.log('error getting movie details')
           }
-        } else {
-          console.log('error getting movie details')
-        }
-      })
-      .catch(error => {
-        console.log(error)
-        this.movieExists = false
-      })
-      .finally(() => {
-        this.loadingDetails = false
-      })
+        })
+        .catch(error => {
+          console.log(error)
+          this.movieExists = false
+        })
+        .finally(() => {
+          this.loadingDetails = false
+        })
+    }
+  },
+  created() {
+    this.getMovieDetails(this.$route.params.id)
   }
 }
 </script>
