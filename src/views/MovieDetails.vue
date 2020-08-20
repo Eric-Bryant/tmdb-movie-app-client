@@ -192,8 +192,8 @@ export default {
 }
 
 .details-container {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
   background: #efefef;
 
   @media screen and (min-width: 600px) {
