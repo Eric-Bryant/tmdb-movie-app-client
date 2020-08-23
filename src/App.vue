@@ -118,8 +118,4 @@ img,
 iframe {
   max-width: 100%;
 }
-
-.row {
-  margin: 0;
-}
 </style>
