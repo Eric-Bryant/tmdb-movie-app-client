@@ -1,18 +1,12 @@
 <template>
-  <div v-if="!loading && parsedWatchList.length > 0">
+  <div v-if="!loading && userWatchList.length > 0">
     <v-container>
       <h1>Your Watch List</h1>
-      <v-row>
-        <MediaCard
-          v-for="media in parsedWatchList"
-          :key="media.id"
-          :mediaInfo="media"
-        />
-      </v-row>
+      <v-row> </v-row>
     </v-container>
   </div>
   <v-container
-    v-else-if="!loading & (parsedWatchList.length == 0)"
+    v-else-if="!loading & (userWatchList.length == 0)"
     fill-height
     class="justify-center"
   >
@@ -29,14 +23,13 @@
 </template>
 
 <script>
-import MediaCard from '../components/MediaCard'
 import { mapGetters } from 'vuex'
 import LoadingRoller from '../components/LoadingRoller'
+import dbClient from '../services/dbCalls'
 
 export default {
   name: 'UserWatchList',
   components: {
-    MediaCard,
     LoadingRoller
   },
   data() {
@@ -46,13 +39,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUID', 'getWatchList']),
-    parsedWatchList() {
-      return this.getWatchList.map(mediaItem => {
-        const watchListMediaId = Object.keys(mediaItem).join()
-        return mediaItem[watchListMediaId]
-      })
-    }
+    ...mapGetters(['getUID'])
+  },
+  created() {
+    dbClient.getUserWatchList(this.getUID).then(watchList => {
+      this.userWatchList = watchList
+    })
   }
 }
 </script>

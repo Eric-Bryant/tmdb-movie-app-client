@@ -67,6 +67,8 @@
                 :onList="onList"
                 :mediaInfo="movie"
                 rounded="true"
+                @added="onList = true"
+                @removed="onList = false"
               />
             </div>
           </v-col>
@@ -97,6 +99,7 @@
 import { mapGetters } from 'vuex'
 import AddRemoveButton from '../components/AddRemoveButton'
 import apiClient from '../services/apiCalls'
+import dbClient from '../services/dbCalls'
 import MediaTrailer from '../components/MediaTrailer'
 import MediaCredits from '../components/MediaCredits'
 import LoadingRoller from '../components/LoadingRoller'
@@ -118,12 +121,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUID', 'loggedIn', 'getWatchList']),
+    ...mapGetters(['getUID', 'loggedIn']),
     moviePoster() {
       return `https://image.tmdb.org/t/p/w500/${this.movie.poster_path}`
-    },
-    watchListStatus() {
-      return this.getWatchList.length
     },
     movieRating() {
       if (this.movie.vote_average < 5) {
@@ -139,14 +139,6 @@ export default {
     $route(to, from) {
       this.loadingDetails = true
       this.getMovieDetails(to.params.id)
-    },
-    watchListStatus() {
-      if (this.loggedIn) {
-        this.onList = this.getWatchList.some(mediaItem => {
-          const watchListMediaId = Object.keys(mediaItem).join()
-          return this.movie.id == watchListMediaId
-        })
-      }
     }
   },
   methods: {
@@ -158,10 +150,11 @@ export default {
             this.movie = response.data
             this.movieExists = true
             if (this.loggedIn) {
-              this.onList = this.getWatchList.some(mediaItem => {
-                const watchListMediaId = Object.keys(mediaItem).join()
-                return this.movie.id == watchListMediaId
-              })
+              dbClient
+                .checkIfMediaOnList(this.getUID, mediaID)
+                .then(isOnList => {
+                  this.onList = isOnList
+                })
             }
           } else {
             console.log('error getting movie details')

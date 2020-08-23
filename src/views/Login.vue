@@ -1,15 +1,15 @@
 <template>
   <v-container fill-height>
-    <AccountForm formType="Login" />
+    <FormLogin />
   </v-container>
 </template>
 
 <script>
-import AccountForm from '../components/AccountForm'
+import FormLogin from '../components/FormLogin'
 
 export default {
   name: 'Login',
-  components: { AccountForm },
+  components: { FormLogin },
   data() {
     return {}
   }

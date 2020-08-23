@@ -47,5 +47,55 @@ export default {
     } else {
       console.log('No user lists found')
     }
+  },
+  async checkIfMediaOnList(userID, mediaID) {
+    const refDoc = Firebase.db.collection('lists').doc(userID)
+    const userData = await refDoc.get()
+    if (userData.exists) {
+      const lists = userData.data()
+      let isOnList = false
+      const listReferences = Object.keys(lists)
+      listReferences.map(list => {
+        if (lists[list].name != 'Watched') {
+          const listTitleIDs = Object.keys(lists[list].onList)
+          listTitleIDs.map(id => {
+            if (!isOnList && mediaID == id) {
+              isOnList = true
+            }
+          })
+        }
+      })
+      return isOnList
+    } else {
+      return false
+    }
+  },
+  async getUserWatchList(userID) {
+    const refDoc = Firebase.db.collection('lists').doc(userID)
+    const userData = await refDoc.get()
+    if (userData.exists) {
+      const list = userData.data().watchList.onList
+      const listMediaIDs = Object.keys(list)
+      const watchList = listMediaIDs.map(id => {
+        return list[id]
+      })
+      return watchList
+    } else {
+      console.log('no watch list found')
+    }
+  },
+  async getUserWatchedList(userID) {
+    const refDoc = Firebase.db.collection('lists').doc(userID)
+    const userData = await refDoc.get()
+    if (userData.exists) {
+      const list = userData.data().watched.onList
+      const listMediaIDs = Object.keys(list)
+      const watchedList = listMediaIDs.map(id => {
+        return list[id]
+      })
+      return watchedList
+    } else {
+      console.log('no watch list found')
+    }
   }
 }

@@ -1,15 +1,11 @@
 <template>
   <v-card class="mx-auto account-form-card">
-    <v-card-title v-if="formType == 'Login'">{{
-      loggedIn ? 'You already are logged in' : 'Log In'
-    }}</v-card-title>
-    <v-card-title v-else>{{
+    <v-card-title>{{
       loggedIn ? 'You already are logged in' : 'Create an Account'
     }}</v-card-title>
     <v-card-text>
       <v-form ref="form" v-model="valid" v-if="!loggedIn">
         <v-text-field
-          v-if="formType == 'Register'"
           v-model="firstName"
           label="First Name"
           required
@@ -18,7 +14,6 @@
           class="mb-2"
         ></v-text-field>
         <v-text-field
-          v-if="formType == 'Register'"
           v-model="lastName"
           label="Last Name"
           required
@@ -45,16 +40,6 @@
           required
         ></v-text-field>
         <v-btn
-          v-if="formType == 'Login'"
-          block
-          color="primary"
-          @click="login"
-          :disabled="!valid"
-          :loading="loggingIn"
-          >Log In</v-btn
-        >
-        <v-btn
-          v-else
           block
           color="primary"
           @click="signUp"
@@ -64,16 +49,6 @@
         >
         <v-btn block class="mt-2" color="warning" @click="reset">Reset</v-btn>
         <v-btn
-          v-if="formType == 'Login'"
-          class="mt-2"
-          block
-          color="primary"
-          @click="loginGoogle"
-          :loading="loggingIn"
-          ><v-icon left>mdi-google</v-icon>Login w/ Google</v-btn
-        >
-        <v-btn
-          v-else
           class="mt-2"
           block
           color="primary"
@@ -92,13 +67,7 @@ import dbClient from '../services/dbCalls'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  name: 'AccountForm',
-  props: {
-    formType: {
-      type: String,
-      required: true
-    }
-  },
+  name: 'FormCreateAccount',
   data() {
     return {
       valid: false,
@@ -123,40 +92,6 @@ export default {
   },
   methods: {
     ...mapActions(['setUser']),
-    loginGoogle() {
-      this.loggingIn = true
-      const provider = Firebase.googleProvider
-      Firebase.auth
-        .signInWithPopup(provider)
-        .then(function(result) {})
-        .catch(function(error) {
-          this.loggingIn = false
-          const errorCode = error.code
-          const errorMessage = error.message
-          const email = error.email
-          const credential = error.credential
-          console.log(errorCode, errorMessage, email, credential)
-        })
-        .finally(() => {
-          this.loggingIn = false
-          this.$router.push({ name: 'Home' })
-        })
-    },
-    login() {
-      this.loggingIn = true
-      Firebase.auth
-        .signInWithEmailAndPassword(this.email, this.password)
-        .then(result => {
-          this.loggingIn = false
-          this.$router.push({ name: 'Home' })
-        })
-        .catch(error => {
-          this.loggingIn = false
-          var errorCode = error.code
-          var errorMessage = error.message
-          console.log(errorCode, errorMessage)
-        })
-    },
     signUp() {
       this.loggingIn = true
       Firebase.auth
