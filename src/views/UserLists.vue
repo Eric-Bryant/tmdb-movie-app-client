@@ -19,7 +19,6 @@
 
 <script>
 import dbClient from '../services/dbCalls'
-import Firebase from '../firebase'
 import { mapGetters } from 'vuex'
 import LoadingRoller from '../components/LoadingRoller'
 

@@ -32,9 +32,15 @@ export default {
       const lists = userData.data()
       const listsInfo = Object.keys(lists).map(list => {
         const listWithTitles = lists[list].onList
+        let listImage
+        Object.keys(listWithTitles).map(title => {
+          if (listWithTitles[title].poster_path != null && !listImage) {
+            listImage = listWithTitles[title].poster_path
+          }
+        })
         const listName = lists[list].name
         const listLength = Object.keys(listWithTitles).length
-        return { name: listName, length: listLength }
+        return { name: listName, length: listLength, image: listImage }
       })
 
       return listsInfo
