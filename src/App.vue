@@ -35,6 +35,9 @@ export default {
     return {
       drawer: false
     }
+  },
+  created() {
+    console.log('app instantiated')
   }
 }
 </script>

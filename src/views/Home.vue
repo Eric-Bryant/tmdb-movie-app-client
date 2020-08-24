@@ -20,6 +20,7 @@
 import { mapGetters } from 'vuex'
 import ListCard from '../components/ListCard'
 import dbClient from '../services/dbCalls'
+import Firebase from '../firebase'
 
 export default {
   name: 'Home',
@@ -28,7 +29,8 @@ export default {
   },
   data() {
     return {
-      userLists: []
+      userLists: [],
+      unsubscribe: null
     }
   },
   computed: {
@@ -38,11 +40,27 @@ export default {
     async getLists() {
       const lists = await dbClient.getUsersLists(this.getUID)
       this.userLists = lists
+      console.log('getting lists')
     }
   },
   created() {
     if (this.loggedIn) {
-      this.getLists()
+      this.unsubscribe = Firebase.db
+        .collection('lists')
+        .doc(this.getUID)
+        .onSnapshot(
+          snapshot => {
+            this.getLists()
+          },
+          error => {
+            console.log(error)
+          }
+        )
+    }
+  },
+  beforeDestroy() {
+    if (this.loggedIn) {
+      this.unsubscribe()
     }
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <v-app-bar app color="primary" dark dense class="app-bar">
-    <router-link :to="{ name: 'Home' }">
+    <router-link :to="{ name: 'Home' }" exact>
       <v-img
         alt="Sakura"
         class="shrink"

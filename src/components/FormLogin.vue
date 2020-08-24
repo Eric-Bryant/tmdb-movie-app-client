@@ -73,24 +73,22 @@ export default {
     ...mapGetters(['loggedIn'])
   },
   methods: {
-    ...mapActions(['setUser']),
     loginGoogle() {
       this.loggingIn = true
       const provider = Firebase.googleProvider
       Firebase.auth
         .signInWithPopup(provider)
-        .then(function(result) {})
-        .catch(function(error) {
+        .then(result => {
+          this.loggingIn = false
+          window.location = '/'
+        })
+        .catch(error => {
           this.loggingIn = false
           const errorCode = error.code
           const errorMessage = error.message
           const email = error.email
           const credential = error.credential
           console.log(errorCode, errorMessage, email, credential)
-        })
-        .finally(() => {
-          this.loggingIn = false
-          this.$router.push({ name: 'Home' })
         })
     },
     login() {
@@ -99,7 +97,7 @@ export default {
         .signInWithEmailAndPassword(this.email, this.password)
         .then(result => {
           this.loggingIn = false
-          this.$router.push({ name: 'Home' })
+          window.location = '/'
         })
         .catch(error => {
           this.loggingIn = false

@@ -47,7 +47,7 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: () =>
-      import(/* webpackChunkName: "createaccount" */ '../views/Login.vue')
+      import(/* webpackChunkName: "login" */ '../views/Login.vue')
   }
 ]
 
@@ -58,7 +58,6 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(x => x.meta.requiresAuth)
-
   if (requiresAuth && !Firebase.auth.currentUser) {
     next('/login')
   } else {
