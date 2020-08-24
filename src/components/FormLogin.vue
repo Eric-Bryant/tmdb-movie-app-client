@@ -80,7 +80,7 @@ export default {
         .signInWithPopup(provider)
         .then(result => {
           this.loggingIn = false
-          window.location = '/'
+          this.$router.push({ name: 'Home' })
         })
         .catch(error => {
           this.loggingIn = false
@@ -97,7 +97,7 @@ export default {
         .signInWithEmailAndPassword(this.email, this.password)
         .then(result => {
           this.loggingIn = false
-          window.location = '/'
+          this.$router.push({ name: 'Home' })
         })
         .catch(error => {
           this.loggingIn = false

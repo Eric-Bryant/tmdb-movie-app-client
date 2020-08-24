@@ -7,13 +7,16 @@ import firebase from './firebase'
 
 Vue.config.productionTip = false
 
+let app
+
 firebase.auth.onAuthStateChanged(user => {
   store.dispatch('setUser', user)
-
-  new Vue({
-    router,
-    store,
-    vuetify,
-    render: h => h(App)
-  }).$mount('#app')
+  if (!app) {
+    app = new Vue({
+      router,
+      store,
+      vuetify,
+      render: h => h(App)
+    }).$mount('#app')
+  }
 })
