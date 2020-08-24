@@ -1,31 +1,33 @@
 <template>
-  <v-container v-if="!loading">
-    <h1>Your Lists</h1>
-    <div v-if="userLists.length > 0">
-      <p v-for="list in userLists" :key="list.index">
-        <v-btn :to="{ name: 'UserWatchList' }">
-          {{ list.name }}: {{ list.length }}</v-btn
-        >
-      </p>
-    </div>
-  </v-container>
-  <v-container v-else fill-height class="justify-center">
-    <div class="d-flex align-center flex-column">
-      <h1 class="mb-2 text-uppercase">Loading details...</h1>
-      <LoadingRoller />
-    </div>
+  <v-container>
+    <v-skeleton-loader :boilerplate="true" type="card-heading" v-if="loading" />
+    <h1 v-else>Your Lists</h1>
+    <LoadingListSkeleton v-if="loading" />
+    <v-row v-else-if="userLists.length > 0 && !loading">
+      <v-col
+        cols="12"
+        sm="6"
+        md="4"
+        v-for="list in userLists"
+        :key="list.index"
+      >
+        <ListCard :list="list" />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 <script>
 import dbClient from '../services/dbCalls'
 import { mapGetters } from 'vuex'
-import LoadingRoller from '../components/LoadingRoller'
+import ListCard from '../components/ListCard'
+import LoadingListSkeleton from '../components/LoadingListSkeleton'
 
 export default {
   name: 'UserLists',
   components: {
-    LoadingRoller
+    LoadingListSkeleton,
+    ListCard
   },
   data() {
     return {

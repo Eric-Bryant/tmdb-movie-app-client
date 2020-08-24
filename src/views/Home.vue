@@ -1,9 +1,22 @@
 <template>
   <v-container>
-    <h1 class="mb-2">Hi {{ loggedIn ? getDisplayName : 'Anonymous' }}!</h1>
+    <v-skeleton-loader
+      :boilerplate="true"
+      type="card-heading"
+      v-if="loading && loggedIn"
+    />
+    <h1 class="mb-2" v-else>
+      Hi {{ loggedIn ? getDisplayName : 'Anonymous' }}!
+    </h1>
     <div v-if="loggedIn">
-      <h2>Your Lists</h2>
-      <v-row v-if="userLists.length > 0">
+      <v-skeleton-loader
+        :boilerplate="true"
+        type="card-heading"
+        v-if="loading"
+      />
+      <h2 v-else>Your Lists</h2>
+      <LoadingListSkeleton v-if="loading" />
+      <v-row v-else-if="userLists.length > 0 && !loading">
         <v-col
           cols="12"
           sm="6"
@@ -23,16 +36,19 @@ import { mapGetters } from 'vuex'
 import ListCard from '../components/ListCard'
 import dbClient from '../services/dbCalls'
 import Firebase from '../firebase'
+import LoadingListSkeleton from '../components/LoadingListSkeleton'
 
 export default {
   name: 'Home',
   components: {
-    ListCard
+    ListCard,
+    LoadingListSkeleton
   },
   data() {
     return {
       userLists: [],
-      unsubscribe: null
+      unsubscribe: null,
+      loading: true
     }
   },
   computed: {
@@ -42,7 +58,7 @@ export default {
     async getLists() {
       const lists = await dbClient.getUsersLists(this.getUID)
       this.userLists = lists
-      console.log('getting lists')
+      this.loading = false
     }
   },
   created() {

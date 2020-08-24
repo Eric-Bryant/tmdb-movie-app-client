@@ -1,13 +1,8 @@
 <template>
-  <v-row justify="center">
-    <v-dialog
-      v-model="dialog"
-      fullscreen
-      hide-overlay
-      transition="dialog-bottom-transition"
-    >
+  <transition name="fade-slide">
+    <div class="overlay">
       <v-card>
-        <v-toolbar dark color="primary" style="border-radius: 0px;">
+        <v-toolbar dense color="primary" style="border-radius: 0px;">
           <v-btn icon @click="closeModal">
             <v-icon>mdi-close</v-icon>
           </v-btn>
@@ -17,7 +12,7 @@
             @sendResultsToModal="getResults($event)"
           />
         </v-toolbar>
-        <v-list three-line dense>
+        <v-list three-line dense v-if="results.length > 0" light>
           <v-list-item
             v-for="result in results"
             :key="result.id"
@@ -46,8 +41,8 @@
           </v-list-item>
         </v-list>
       </v-card>
-    </v-dialog>
-  </v-row>
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -58,6 +53,11 @@ export default {
     dialog: {
       type: Boolean,
       default: true
+    }
+  },
+  watch: {
+    $route(to, from) {
+      this.results = {}
     }
   },
   components: {
@@ -71,6 +71,7 @@ export default {
   },
   methods: {
     closeModal() {
+      this.results = {}
       this.$emit('closeModal')
     },
     getResults(results) {
@@ -92,7 +93,29 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.overlay {
+  width: 100vw;
+  position: absolute;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  padding: 0;
+  z-index: 9999;
+  overflow-y: scroll;
+}
 .avatar {
   object-fit: cover;
+}
+
+.fade-slide-enter-active {
+  transition: transform 0.2s;
+}
+
+.fade-slide-leave-active {
+  transition: transform 0.6s;
+}
+.fade-slide-enter,
+.fade-slide-leave-to {
+  transform: translateY(-100%);
 }
 </style>

@@ -93,6 +93,9 @@ export default {
   watch: {
     search() {
       this.makeSearch()
+    },
+    $route(to, from) {
+      this.search = null
     }
   },
   computed: {
