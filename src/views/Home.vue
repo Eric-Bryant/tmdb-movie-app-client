@@ -1,21 +1,13 @@
 <template>
   <v-container>
-    <v-skeleton-loader
-      :boilerplate="true"
-      type="card-heading"
-      v-if="loading && loggedIn"
-    />
+    <v-skeleton-loader type="card-heading" v-if="loading && loggedIn" />
     <h1 class="mb-2" v-else>
       Hi {{ loggedIn ? getDisplayName : 'Anonymous' }}!
     </h1>
     <div v-if="loggedIn">
-      <v-skeleton-loader
-        :boilerplate="true"
-        type="card-heading"
-        v-if="loading"
-      />
+      <v-skeleton-loader type="card-heading" v-if="loading" />
       <h2 v-else>Your Lists</h2>
-      <LoadingListSkeleton v-if="loading" />
+      <LoadingListSkeleton v-if="loading" :amount="3" />
       <v-row v-else-if="userLists.length > 0 && !loading">
         <v-col
           cols="12"

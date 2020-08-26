@@ -16,7 +16,7 @@
       </v-avatar>
     </div>
     <v-card-actions
-      ><v-btn small :to="{ name: 'UserWatchList' }" color="primary"
+      ><v-btn small :to="{ path: `/my-lists/${listSlug}` }" color="primary"
         >View</v-btn
       ></v-card-actions
     >
@@ -35,6 +35,15 @@ export default {
   computed: {
     listImageBaseURL() {
       return 'https://image.tmdb.org/t/p/w92/'
+    },
+    listSlug() {
+      return this.list.name
+        .replace(' ', '-')
+        .split('')
+        .map(character => {
+          return character.toLowerCase()
+        })
+        .join('')
     }
   }
 }

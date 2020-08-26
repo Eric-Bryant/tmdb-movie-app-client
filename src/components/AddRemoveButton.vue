@@ -1,9 +1,9 @@
 <template>
   <div v-if="onList">
-    <v-btn @click="removeFromWatchList" color="warning">Remove</v-btn>
-    <v-btn @click="addToWatched" color="success">Watched</v-btn>
+    <v-btn @click="removeFromWatchList" color="error">Remove</v-btn>
+    <v-btn @click="addToWatched" color="accent" class="ml-2">Watched</v-btn>
   </div>
-  <v-btn v-else @click="addToWatchList" color="primary">Add</v-btn>
+  <v-btn v-else @click="addToWatchList" color="accent">Add To Watch List</v-btn>
 </template>
 
 <script>

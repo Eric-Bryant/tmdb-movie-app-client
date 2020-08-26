@@ -30,5 +30,8 @@ export default {
   },
   getMovieCredits(movieID) {
     return apiClient.get(`/movie/${movieID}/credits`)
+  },
+  getMovieSimilar(movieID) {
+    return apiClient.get(`/movie/${movieID}/similar`)
   }
 }
