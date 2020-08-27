@@ -16,37 +16,14 @@
     <div class="details-container" :style="{ background: detailsBackground }">
       <div class="overlay"></div>
       <v-container>
-        <v-slide-group
-          v-if="movie.genres.length > 0"
-          class="pt-2 d-xs-block d-sm-none"
-        >
-          <v-slide-item v-for="genre in movie.genres" :key="genre.id">
-            <v-chip
-              :to="`/genre/${genre.id}`"
-              color="secondary"
-              class="mr-2 genre-chips"
-              >{{ genre.name }}</v-chip
-            >
-          </v-slide-item>
-        </v-slide-group>
+        <GenreChips :movie="movie" class="pt-2 d-xs-block d-sm-none" />
         <v-row class="details-row">
           <v-col cols="12" sm="3"
             ><v-img :src="moviePoster" v-if="movie.poster_path"
           /></v-col>
           <v-col cols="12" sm="9" style="z-index: 1">
-            <v-slide-group
-              v-if="movie.genres.length > 0"
-              class="mt-2 mt-sm-0 d-none d-sm-block"
-            >
-              <v-slide-item v-for="genre in movie.genres" :key="genre.id">
-                <v-chip
-                  :to="`/genre/${genre.id}`"
-                  color="secondary"
-                  class="mr-2 mb-2 genre-chips"
-                  >{{ genre.name }}</v-chip
-                >
-              </v-slide-item>
-            </v-slide-group>
+            <GenreChips :movie="movie" class="mt-2 mt-sm-0 d-none d-sm-block" />
+
             <h1 class="movie-title">
               {{ movie.title }}
               <sup class="text-caption"
@@ -88,48 +65,31 @@
     <!-- Cast Section -->
     <v-container class="py-4">
       <h2 class="cast-heading text-center my-5">Cast</h2>
-      <v-slide-group>
-        <v-slide-item v-for="person in movieCast" :key="person.id">
-          <v-card max-width="185" class="ma-2">
-            <router-link :to="`/person/${person.id}`" exact>
-              <v-img
-                v-if="person.profile_path"
-                :src="`https://image.tmdb.org/t/p/w185/${person.profile_path}`"
-                height="250px"
-              ></v-img>
-              <v-img
-                v-else
-                src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22250%22%20height%3D%22185%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20250%20185%22%20preserveAspectRatio%3D%22none%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3Cstyle%20type%3D%22text%2Fcss%22%3E%0A%20%20%20%20%20%20%20%20%20%20%23holder%20text%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20fill%3A%20transparent%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20font-family%3A%20sans-serif%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20font-size%3A%2040px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20font-weight%3A%20400%3B%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%3C%2Fstyle%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Cg%20id%3D%22holder%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23E0E0E0%22%3E%3C%2Frect%3E%0A%20%20%20%20%20%20%20%20%3Cg%3E%0A%20%20%20%20%20%20%20%20%20%20%3Ctext%20text-anchor%3D%22middle%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20dy%3D%22.3em%22%3E250%20x%20185%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%3C%2Fsvg%3E"
-                height="250px"
-              ></v-img>
-            </router-link>
-            <v-card-title class="cast-name">{{ person.name }}</v-card-title>
-          </v-card>
-        </v-slide-item>
-      </v-slide-group>
+      <MediaCarouselCards
+        :info="movieCast"
+        :mobile="false"
+        class="d-none d-sm-flex"
+      />
+      <MediaCarouselCards
+        :info="movieCast"
+        :mobile="true"
+        class="d-flex d-sm-none"
+      />
     </v-container>
     <!-- Similar Movies Section -->
-    <v-container class="py-4">
+    <v-container class="py-4 mb-9">
       <h2 class="cast-heading text-center mb-5">Similar Films</h2>
-      <v-slide-group>
-        <v-slide-item v-for="movie in similarMovies" :key="movie.id">
-          <v-card max-width="185" class="ma-2">
-            <router-link :to="`/movie/${movie.id}`" exact>
-              <v-img
-                v-if="movie.poster_path"
-                :src="`https://image.tmdb.org/t/p/w185/${movie.poster_path}`"
-                height="250px"
-              ></v-img>
-              <v-img
-                v-else
-                src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22250%22%20height%3D%22185%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20250%20185%22%20preserveAspectRatio%3D%22none%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3Cstyle%20type%3D%22text%2Fcss%22%3E%0A%20%20%20%20%20%20%20%20%20%20%23holder%20text%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20fill%3A%20transparent%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20font-family%3A%20sans-serif%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20font-size%3A%2040px%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20font-weight%3A%20400%3B%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%3C%2Fstyle%3E%0A%20%20%20%20%20%20%3C%2Fdefs%3E%0A%20%20%20%20%20%20%3Cg%20id%3D%22holder%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23E0E0E0%22%3E%3C%2Frect%3E%0A%20%20%20%20%20%20%20%20%3Cg%3E%0A%20%20%20%20%20%20%20%20%20%20%3Ctext%20text-anchor%3D%22middle%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20dy%3D%22.3em%22%3E250%20x%20185%3C%2Ftext%3E%0A%20%20%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%3C%2Fsvg%3E"
-                height="250px"
-              ></v-img>
-            </router-link>
-            <v-card-title class="cast-name">{{ movie.title }}</v-card-title>
-          </v-card>
-        </v-slide-item>
-      </v-slide-group>
+      <MediaCarouselCards
+        :info="similarMovies"
+        :mobile="false"
+        class="d-none d-sm-flex"
+      />
+      <!-- Mobile Only -->
+      <MediaCarouselCards
+        :info="similarMovies"
+        :mobile="true"
+        class="d-flex d-sm-none"
+      />
     </v-container>
   </div>
   <!-- Loading done & Movie not found -->
@@ -146,7 +106,7 @@
   <v-container fill-height class="justify-center" v-else>
     <div class="d-flex align-center flex-column">
       <h1 class="mb-2 text-uppercase">Loading details...</h1>
-      <LoadingRoller />
+      <BaseLoadingRoller />
     </div>
   </v-container>
 </template>
@@ -156,13 +116,17 @@ import { mapGetters } from 'vuex'
 import AddRemoveButton from '../components/AddRemoveButton'
 import apiClient from '../services/apiCalls'
 import dbClient from '../services/dbCalls'
-import LoadingRoller from '../components/LoadingRoller'
+import BaseLoadingRoller from '../components/BaseLoadingRoller'
+import GenreChips from '../components/GenreChips'
+import MediaCarouselCards from '../components/MediaCarouselCards'
 
 export default {
   name: 'MovieDetails',
   components: {
     AddRemoveButton,
-    LoadingRoller
+    BaseLoadingRoller,
+    GenreChips,
+    MediaCarouselCards
   },
   data() {
     return {
@@ -213,16 +177,15 @@ export default {
     getMovieDetails(mediaID) {
       apiClient
         .getMovieDetails(mediaID)
-        .then(response => {
+        .then(async response => {
           if (response.status == 200) {
             this.movie = response.data
             this.movieExists = true
             if (this.loggedIn) {
-              dbClient
-                .checkIfMediaOnList(this.getUID, mediaID)
-                .then(isOnList => {
-                  this.onList = isOnList
-                })
+              this.onList = await dbClient.checkIfMediaOnList(
+                this.getUID,
+                mediaID
+              )
             }
 
             this.getMovieCredits()
@@ -328,16 +291,6 @@ export default {
   line-height: 0;
 }
 
-.genre-chips {
-  &:first-child {
-    margin-left: 0px !important;
-  }
-
-  &:last-child {
-    margin-right: 0px !important;
-  }
-}
-
 .movie-title,
 .cast-heading {
   font-size: 2em;
@@ -361,9 +314,5 @@ export default {
       opacity: 0.7;
     }
   }
-}
-
-.cast-name {
-  word-break: break-word;
 }
 </style>

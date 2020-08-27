@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  name: 'LoadingRoller'
+  name: 'BaseLoadingRoller'
 }
 </script>
 

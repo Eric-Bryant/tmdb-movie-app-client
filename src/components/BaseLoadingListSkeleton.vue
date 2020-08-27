@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  name: 'LoadingListSkeleton',
+  name: 'BaseLoadingListSkeleton',
   props: {
     amount: {
       type: Number,

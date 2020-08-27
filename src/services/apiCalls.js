@@ -33,5 +33,8 @@ export default {
   },
   getMovieSimilar(movieID) {
     return apiClient.get(`/movie/${movieID}/similar`)
+  },
+  getRecommendedMovies(movieID) {
+    return apiClient.get(`/movie/${movieID}/recommendations`)
   }
 }

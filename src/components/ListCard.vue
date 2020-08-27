@@ -25,7 +25,7 @@
 
 <script>
 export default {
-  name: 'ListCard',
+  name: 'BaseListCard',
   props: {
     list: {
       type: Object,

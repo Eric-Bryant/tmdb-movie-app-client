@@ -17,20 +17,20 @@
   <v-container v-else fill-height class="justify-center">
     <div class="d-flex align-center flex-column">
       <h1 class="mb-2 text-uppercase">Loading details...</h1>
-      <LoadingRoller />
+      <BaseLoadingRoller />
     </div>
   </v-container>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import LoadingRoller from '../components/LoadingRoller'
+import BaseLoadingRoller from '../components/BaseLoadingRoller'
 import dbClient from '../services/dbCalls'
 
 export default {
   name: 'UserWatchList',
   components: {
-    LoadingRoller
+    BaseLoadingRoller
   },
   data() {
     return {
