@@ -4,7 +4,10 @@
       <BaseLoadingListSkeleton :amount="3" />
     </div>
     <div v-else>
-      <MediaCarouselCards :info="recommendations" />
+      <MediaCarouselCards
+        :info="recommendations"
+        :amount="recommendations.length"
+      />
     </div>
     <v-skeleton-loader type="card-heading" v-if="loading" />
     <p v-if="!loading && recommendations.length === 0">

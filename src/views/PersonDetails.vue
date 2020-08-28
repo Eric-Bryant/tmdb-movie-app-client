@@ -12,7 +12,7 @@
             <h1 class="person-name">
               {{ person.name }}
             </h1>
-            <p class="text-subtitle-1">
+            <p class="text-subtitle-1" v-if="person.birthday">
               {{ person.birthday.split('-')[0] }} -
               {{ person.deathday ? person.deathday.split('-')[0] : 'Present' }}
             </p>
@@ -66,7 +66,7 @@ import BaseLoadingRoller from '../components/BaseLoadingRoller'
 import MediaCarouselCards from '../components/MediaCarouselCards'
 
 export default {
-  name: 'TvDetails',
+  name: 'PersonDetails',
   components: {
     BaseLoadingRoller,
     MediaCarouselCards
@@ -113,13 +113,24 @@ export default {
             this.person = response.data
             this.personExists = true
             const combinedCredits = this.person.combined_credits
-            combinedCredits.cast.map(title => {
-              if (title.media_type === 'tv') {
-                this.tvKnownFor.push(title)
-              } else if (title.media_type === 'movie') {
-                this.moviesKnownFor.push(title)
-              }
-            })
+
+            if (this.person.known_for_department === 'Acting') {
+              combinedCredits.cast.map(title => {
+                if (title.media_type === 'tv') {
+                  this.tvKnownFor.push(title)
+                } else if (title.media_type === 'movie') {
+                  this.moviesKnownFor.push(title)
+                }
+              })
+            } else {
+              combinedCredits.crew.map(title => {
+                if (title.media_type === 'tv') {
+                  this.tvKnownFor.push(title)
+                } else if (title.media_type === 'movie') {
+                  this.moviesKnownFor.push(title)
+                }
+              })
+            }
           } else {
             console.log('error getting person details')
           }

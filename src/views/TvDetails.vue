@@ -31,12 +31,14 @@
               >
             </h1>
             <p class="tv-overview">{{ tv.overview }}</p>
-            <!-- <p class="producer">
-              Producer:
-              <router-link :to="`/person/${tvProducer.id}`">{{
-                tvProducer.name
-              }}</router-link>
-            </p> -->
+            <p class="producer">
+              Created By:
+              <span v-for="(creator, index) in tvCreators" :key="index"
+                ><router-link :to="`/person/${creator.id}`">
+                  {{ creator.name }}</router-link
+                >{{ index == tvCreators.length - 1 ? '' : ', ' }}</span
+              >
+            </p>
             <div class="d-flex align-center">
               <v-progress-circular
                 :color="tvRating"
@@ -63,10 +65,12 @@
     <!-- Cast Section -->
     <v-container class="py-4">
       <h2 class="tv-section-heading my-5 text-center">Cast</h2>
-      <MediaCarouselCards :info="tvCast" />
+      <MediaCarouselCards :info="tvCast" v-if="tvCast.length > 0" />
+      <h3 v-else class="text-center">Nothing found.</h3>
       <!-- Similar Tv Section -->
       <h2 class="tv-section-heading my-5 text-center">Similar Shows</h2>
-      <MediaCarouselCards :info="similarTv" />
+      <MediaCarouselCards :info="similarTv" v-if="similarTv.length > 0" />
+      <h3 v-else class="text-center">Nothing found.</h3>
     </v-container>
   </div>
   <!-- Loading done & tv not found -->
@@ -109,9 +113,8 @@ export default {
     return {
       tv: {},
       tvExists: false,
-      tvCredits: [],
       tvCast: [],
-      tvProducer: '',
+      tvCreators: [],
       tvVideos: [],
       similarTv: [],
       youtubeID: '',
@@ -151,23 +154,32 @@ export default {
     }
   },
   methods: {
-    getTvDetails(mediaID) {
+    getTvDetails(tvID) {
       apiClient
-        .getTvDetails(mediaID)
+        .getTvDetails(tvID)
         .then(async response => {
           if (response.status == 200) {
             this.tv = response.data
+            this.tvCast = this.tv.credits.cast
+            this.tvCreators = this.tv.created_by
+            this.tvVideos = this.tv.videos.results
+            this.similarTv = this.tv.similar.results
             this.tvExists = true
             if (this.loggedIn) {
-              this.onList = await dbClient.checkIfMediaOnList(
-                this.getUID,
-                mediaID
-              )
+              this.onList = await dbClient.checkIfMediaOnList(this.getUID, tvID)
             }
 
-            this.getTvCredits()
-            this.getTvTrailers()
-            this.getSimilarTv()
+            if (this.tvVideos.length > 1) {
+              this.tvVideos.map(video => {
+                if (video.type == 'Trailer') {
+                  this.youtubeID = video.key
+                }
+              })
+            } else if (this.tvVideos.length == 1) {
+              this.youtubeID = this.tvVideos[0].key
+            } else {
+              this.youtubeID = ''
+            }
           } else {
             console.log('error getting tv details')
           }
@@ -179,44 +191,6 @@ export default {
         .finally(() => {
           this.loadingDetails = false
         })
-    },
-    getTvCredits() {
-      apiClient.getTvCredits(this.tv.id).then(result => {
-        if (result.data) {
-          this.tvCredits = result.data
-          this.tvCast = this.tvCredits.cast
-          this.tvCredits.crew.map(crewMember => {
-            if (crewMember.job == 'Executive Producer') {
-              this.tvProducer = crewMember
-            }
-          })
-        }
-      })
-    },
-    getTvTrailers() {
-      apiClient.getTvTrailers(this.tv.id).then(result => {
-        if (result.data) {
-          this.tvVideos = result.data
-          if (this.tvVideos.results.length > 1) {
-            this.tvVideos.results.map(video => {
-              if (video.type == 'Trailer') {
-                this.youtubeID = video.key
-              }
-            })
-          } else if (this.tvVideos.results.length == 1) {
-            this.youtubeID = this.tvVideos.results[0].key
-          } else {
-            this.youtubeID = ''
-          }
-        }
-      })
-    },
-    getSimilarTv() {
-      apiClient.getTvSimilar(this.tv.id).then(result => {
-        if (result.data.results) {
-          this.similarTv = result.data.results
-        }
-      })
     }
   },
   created() {

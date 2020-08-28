@@ -3,7 +3,7 @@
   <div v-if="movieExists && !loadingDetails">
     <v-container
       class="d-xs-block d-sm-none trailer-container"
-      v-if="mediaVideos"
+      v-if="movieVideos"
       ><iframe
         width="100%"
         height="215"
@@ -65,10 +65,15 @@
     <!-- Cast Section -->
     <v-container class="py-4">
       <h2 class="movie-section-heading my-5 text-center">Cast</h2>
-      <MediaCarouselCards :info="movieCast" />
+      <MediaCarouselCards :info="movieCast" v-if="movieCast.length > 0" />
+      <h3 v-else class="text-center">Nothing found.</h3>
       <!-- Similar Movies Section -->
       <h2 class="movie-section-heading my-5 text-center">Similar Films</h2>
-      <MediaCarouselCards :info="similarMovies" />
+      <MediaCarouselCards
+        :info="similarMovies"
+        v-if="similarMovies.length > 0"
+      />
+      <h3 v-else class="text-center">Nothing found.</h3>
     </v-container>
   </div>
   <!-- Loading done & Movie not found -->
@@ -111,10 +116,9 @@ export default {
     return {
       movie: {},
       movieExists: false,
-      mediaCredits: [],
       movieCast: [],
       movieDirector: '',
-      mediaVideos: [],
+      movieVideos: [],
       similarMovies: [],
       youtubeID: '',
       vimeoID: '',
@@ -159,6 +163,10 @@ export default {
         .then(async response => {
           if (response.status == 200) {
             this.movie = response.data
+            const movieCredits = this.movie.credits
+            this.movieCast = movieCredits.cast
+            this.similarMovies = this.movie.similar.results
+            this.movieVideos = this.movie.videos.results
             this.movieExists = true
             if (this.loggedIn) {
               this.onList = await dbClient.checkIfMediaOnList(
@@ -166,10 +174,23 @@ export default {
                 mediaID
               )
             }
+            movieCredits.crew.map(crewMember => {
+              if (crewMember.job == 'Director') {
+                this.movieDirector = crewMember
+              }
+            })
 
-            this.getMovieCredits()
-            this.getMovieTrailers()
-            this.getSimilarMovies()
+            if (this.movieVideos.length > 1) {
+              this.movieVideos.map(video => {
+                if (video.type == 'Trailer') {
+                  this.youtubeID = video.key
+                }
+              })
+            } else if (this.movieVideos.length == 1) {
+              this.youtubeID = this.movieVideos[0].key
+            } else {
+              this.youtubeID = ''
+            }
           } else {
             console.log('error getting movie details')
           }
@@ -181,44 +202,6 @@ export default {
         .finally(() => {
           this.loadingDetails = false
         })
-    },
-    getMovieCredits() {
-      apiClient.getMovieCredits(this.movie.id).then(result => {
-        if (result.data) {
-          this.movieCredits = result.data
-          this.movieCast = this.movieCredits.cast
-          this.movieCredits.crew.map(crewMember => {
-            if (crewMember.job == 'Director') {
-              this.movieDirector = crewMember
-            }
-          })
-        }
-      })
-    },
-    getMovieTrailers() {
-      apiClient.getMovieTrailers(this.movie.id).then(result => {
-        if (result.data) {
-          this.mediaVideos = result.data
-          if (this.mediaVideos.results.length > 1) {
-            this.mediaVideos.results.map(video => {
-              if (video.type == 'Trailer') {
-                this.youtubeID = video.key
-              }
-            })
-          } else if (this.mediaVideos.results.length == 1) {
-            this.youtubeID = this.mediaVideos.results[0].key
-          } else {
-            this.youtubeID = ''
-          }
-        }
-      })
-    },
-    getSimilarMovies() {
-      apiClient.getMovieSimilar(this.movie.id).then(result => {
-        if (result.data.results) {
-          this.similarMovies = result.data.results
-        }
-      })
     }
   },
   created() {
