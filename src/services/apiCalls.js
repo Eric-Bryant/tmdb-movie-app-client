@@ -36,5 +36,20 @@ export default {
   },
   getRecommendedMovies(movieID) {
     return apiClient.get(`/movie/${movieID}/recommendations`)
+  },
+  getTvDetails(tvID) {
+    return apiClient.get(`/tv/${tvID}`)
+  },
+  getTvTrailers(tvID) {
+    return apiClient.get(`/tv/${tvID}/videos`)
+  },
+  getTvCredits(tvID) {
+    return apiClient.get(`/tv/${tvID}/credits`)
+  },
+  getTvSimilar(tvID) {
+    return apiClient.get(`/tv/${tvID}/similar`)
+  },
+  getRecommendedTv(tvID) {
+    return apiClient.get(`/tv/${tvID}/recommendations`)
   }
 }

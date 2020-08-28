@@ -4,20 +4,11 @@
       <BaseLoadingListSkeleton :amount="3" />
     </div>
     <div v-else>
-      <MediaCarouselCards
-        :info="recommendations"
-        :mobile="false"
-        class="d-none d-sm-flex"
-      />
-      <MediaCarouselCards
-        :info="recommendations"
-        :mobile="true"
-        class="d-flex d-sm-none"
-      />
+      <MediaCarouselCards :info="recommendations" />
     </div>
     <v-skeleton-loader type="card-heading" v-if="loading" />
     <p v-if="!loading && recommendations.length === 0">
-      No Recommendations. Your List is Empty.
+      No Recommendations.
     </p>
   </div>
 </template>
@@ -38,7 +29,8 @@ export default {
   data() {
     return {
       loading: true,
-      recommendations: []
+      recommendations: [],
+      allTitlesOnLists: []
     }
   },
   computed: {
@@ -47,34 +39,57 @@ export default {
   methods: {
     async getRecommendations() {
       const watchList = await dbClient.getUserWatchList(this.getUID)
+      const watchedList = await dbClient.getUserWatchedList(this.getUID)
 
-      if (watchList.length === 0) {
+      this.allTitlesOnLists.push(...watchList)
+      this.allTitlesOnLists.push(...watchedList)
+
+      if (this.allTitlesOnLists.length === 0) {
         this.loading = false
       }
 
-      watchList.map(async (watchListTitle, index) => {
-        const recommendedMovies = await apiClient.getRecommendedMovies(
+      this.allTitlesOnLists.map(async (watchListTitle, index) => {
+        let type
+
+        if (watchListTitle.name || watchListTitle.original_name) {
+          type = 'TV'
+        } else {
+          type = 'Movie'
+        }
+
+        this.getRecommended(watchListTitle, type, index)
+      })
+    },
+    async getRecommended(watchListTitle, type, index) {
+      let recommendedMedia
+      if (type === 'TV') {
+        recommendedMedia = await apiClient.getRecommendedTv(watchListTitle.id)
+      } else {
+        recommendedMedia = await apiClient.getRecommendedMovies(
           watchListTitle.id
         )
+      }
 
+      if (recommendedMedia.data.results.length > 0) {
         for (let i = 0; i < 3; i++) {
-          let recommendedMovie = recommendedMovies.data.results[i]
+          let recommendedMediaTitle = recommendedMedia.data.results[i]
           const isOnList = await dbClient.checkIfMediaOnList(
             this.getUID,
-            recommendedMovie.id
+            recommendedMediaTitle.id
           )
 
           if (this.recommendations.length < 20 && !isOnList) {
-            this.recommendations.push(recommendedMovie)
+            this.recommendations.push(recommendedMediaTitle)
           }
         }
+      }
 
-        if (index === watchList.length - 1) {
-          this.loading = false
-        }
-      })
+      if (index === this.allTitlesOnLists.length - 1) {
+        this.loading = false
+      }
     }
   },
+
   created() {
     this.getRecommendations()
   }

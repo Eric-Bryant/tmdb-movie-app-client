@@ -16,7 +16,7 @@ const vuetify = new Vuetify({
         secondary: '#C33C54',
         accent: '#028090',
         info: '#CAE9FF',
-        success: '#ACEB98',
+        success: '#04724D',
         warning: '#FFE347',
         error: '#CB2C2C'
       }

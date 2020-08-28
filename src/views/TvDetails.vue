@@ -1,6 +1,6 @@
 <template>
-  <!-- Loading done & movie exists -->
-  <div v-if="movieExists && !loadingDetails">
+  <!-- Loading done & tv exists -->
+  <div v-if="tvExists && !loadingDetails">
     <v-container
       class="d-xs-block d-sm-none trailer-container"
       v-if="mediaVideos"
@@ -16,43 +16,43 @@
     <div class="details-container" :style="{ background: detailsBackground }">
       <div class="overlay"></div>
       <v-container>
-        <GenreChips :media="movie" class="pt-2 d-xs-block d-sm-none" />
+        <GenreChips :media="tv" class="pt-2 d-xs-block d-sm-none" />
         <v-row class="details-row">
           <v-col cols="12" sm="3"
-            ><v-img :src="moviePoster" v-if="movie.poster_path"
+            ><v-img :src="tvPoster" v-if="tv.poster_path"
           /></v-col>
           <v-col cols="12" sm="9" style="z-index: 1">
-            <GenreChips :media="movie" class="mt-2 mt-sm-0 d-none d-sm-block" />
+            <GenreChips :media="tv" class="mt-2 mt-sm-0 d-none d-sm-block" />
 
-            <h1 class="movie-title">
-              {{ movie.title }}
+            <h1 class="tv-title">
+              {{ tv.name || tv.original_name }}
               <sup class="text-caption"
                 >({{
-                  movie.release_date ? movie.release_date.split('-')[0] : 'N/A'
+                  tv.first_air_date ? tv.first_air_date.split('-')[0] : 'N/A'
                 }})</sup
               >
             </h1>
-            <p class="movie-overview">{{ movie.overview }}</p>
-            <p class="director">
-              Director:
-              <router-link :to="`/person/${movieDirector.id}`">{{
-                movieDirector.name
+            <p class="tv-overview">{{ tv.overview }}</p>
+            <p class="producer">
+              Producer:
+              <router-link :to="`/person/${tvProducer.id}`">{{
+                tvProducer.name
               }}</router-link>
             </p>
             <div class="d-flex align-center">
               <v-progress-circular
-                :color="movieRating"
+                :color="tvRating"
                 rotate="270"
                 size="64"
                 width="5"
-                :value="movie.vote_average * 10"
-                >{{ movie.vote_average * 10 }}%</v-progress-circular
+                :value="tv.vote_average * 10"
+                >{{ tv.vote_average * 10 }}%</v-progress-circular
               >
               <AddRemoveButton
                 class="ml-2"
                 v-if="loggedIn"
                 :onList="onList"
-                :mediaInfo="movie"
+                :mediaInfo="tv"
                 rounded="true"
                 @added="onList = true"
                 @removed="onList = false"
@@ -64,21 +64,21 @@
     </div>
     <!-- Cast Section -->
     <v-container class="py-4">
-      <h2 class="movie-section-heading my-5 text-center">Cast</h2>
-      <MediaCarouselCards :info="movieCast" />
-      <!-- Similar Movies Section -->
-      <h2 class="movie-section-heading my-5 text-center">Similar Films</h2>
-      <MediaCarouselCards :info="similarMovies" />
+      <h2 class="tv-section-heading my-5 text-center">Cast</h2>
+      <MediaCarouselCards :info="tvCast" />
+      <!-- Similar Tv Section -->
+      <h2 class="tv-section-heading my-5 text-center">Similar Shows</h2>
+      <MediaCarouselCards :info="similarTv" />
     </v-container>
   </div>
-  <!-- Loading done & Movie not found -->
+  <!-- Loading done & tv not found -->
   <v-container
     fill-height
     class="justify-center"
-    v-else-if="!loadingDetails && !movieExists"
+    v-else-if="!loadingDetails && !tvExists"
   >
     <div class="align-center">
-      <h1 class="text-uppercase">Movie Not Found</h1>
+      <h1 class="text-uppercase">Show Not Found</h1>
     </div>
   </v-container>
   <!-- Loading -->
@@ -100,7 +100,7 @@ import GenreChips from '../components/GenreChips'
 import MediaCarouselCards from '../components/MediaCarouselCards'
 
 export default {
-  name: 'MovieDetails',
+  name: 'TvDetails',
   components: {
     AddRemoveButton,
     BaseLoadingRoller,
@@ -109,13 +109,13 @@ export default {
   },
   data() {
     return {
-      movie: {},
-      movieExists: false,
+      tv: {},
+      tvExists: false,
       mediaCredits: [],
-      movieCast: [],
-      movieDirector: '',
+      tvCast: [],
+      tvProducer: '',
       mediaVideos: [],
-      similarMovies: [],
+      similarTv: [],
       youtubeID: '',
       vimeoID: '',
       onList: false,
@@ -124,23 +124,23 @@ export default {
   },
   computed: {
     ...mapGetters(['getUID', 'loggedIn']),
-    moviePoster() {
-      return `https://image.tmdb.org/t/p/w500/${this.movie.poster_path}`
+    tvPoster() {
+      return `https://image.tmdb.org/t/p/w500/${this.tv.poster_path}`
     },
-    movieRating() {
-      if (this.movie.vote_average < 5) {
+    tvRating() {
+      if (this.tv.vote_average < 5) {
         return 'error'
-      } else if (this.movie.vote_average < 7) {
+      } else if (this.tv.vote_average < 7) {
         return 'warning'
       } else {
         return 'success'
       }
     },
     detailsBackground() {
-      if (this.movie.backdrop_path) {
-        return `url(https://image.tmdb.org/t/p/original/${this.movie.backdrop_path}) no-repeat center/cover`
-      } else if (this.movie.poster_path) {
-        return `url(https://image.tmdb.org/t/p/original/${this.movie.poster_path}) no-repeat center/cover`
+      if (this.tv.backdrop_path) {
+        return `url(https://image.tmdb.org/t/p/original/${this.tv.backdrop_path}) no-repeat center/cover`
+      } else if (this.tv.poster_path) {
+        return `url(https://image.tmdb.org/t/p/original/${this.tv.poster_path}) no-repeat center/cover`
       } else {
         return `#efefef`
       }
@@ -149,17 +149,17 @@ export default {
   watch: {
     $route(to, from) {
       this.loadingDetails = true
-      this.getMovieDetails(to.params.id)
+      this.getTvDetails(to.params.id)
     }
   },
   methods: {
-    getMovieDetails(mediaID) {
+    getTvDetails(mediaID) {
       apiClient
-        .getMovieDetails(mediaID)
+        .getTvDetails(mediaID)
         .then(async response => {
           if (response.status == 200) {
-            this.movie = response.data
-            this.movieExists = true
+            this.tv = response.data
+            this.tvExists = true
             if (this.loggedIn) {
               this.onList = await dbClient.checkIfMediaOnList(
                 this.getUID,
@@ -167,36 +167,36 @@ export default {
               )
             }
 
-            this.getMovieCredits()
-            this.getMovieTrailers()
-            this.getSimilarMovies()
+            this.getTvCredits()
+            this.getTvTrailers()
+            this.getSimilarTv()
           } else {
-            console.log('error getting movie details')
+            console.log('error getting tv details')
           }
         })
         .catch(error => {
           console.log(error)
-          this.movieExists = false
+          this.tvExists = false
         })
         .finally(() => {
           this.loadingDetails = false
         })
     },
-    getMovieCredits() {
-      apiClient.getMovieCredits(this.movie.id).then(result => {
+    getTvCredits() {
+      apiClient.getTvCredits(this.tv.id).then(result => {
         if (result.data) {
-          this.movieCredits = result.data
-          this.movieCast = this.movieCredits.cast
-          this.movieCredits.crew.map(crewMember => {
-            if (crewMember.job == 'Director') {
-              this.movieDirector = crewMember
+          this.tvCredits = result.data
+          this.tvCast = this.tvCredits.cast
+          this.tvCredits.crew.map(crewMember => {
+            if (crewMember.job == 'Executive Producer') {
+              this.tvProducer = crewMember
             }
           })
         }
       })
     },
-    getMovieTrailers() {
-      apiClient.getMovieTrailers(this.movie.id).then(result => {
+    getTvTrailers() {
+      apiClient.getTvTrailers(this.tv.id).then(result => {
         if (result.data) {
           this.mediaVideos = result.data
           if (this.mediaVideos.results.length > 1) {
@@ -213,16 +213,16 @@ export default {
         }
       })
     },
-    getSimilarMovies() {
-      apiClient.getMovieSimilar(this.movie.id).then(result => {
+    getSimilarTv() {
+      apiClient.getTvSimilar(this.tv.id).then(result => {
         if (result.data.results) {
-          this.similarMovies = result.data.results
+          this.similarTv = result.data.results
         }
       })
     }
   },
   created() {
-    this.getMovieDetails(this.$route.params.id)
+    this.getTvDetails(this.$route.params.id)
   }
 }
 </script>
@@ -261,12 +261,12 @@ export default {
   padding: 0;
 }
 
-.movie-title,
-.movie-section-heading {
+.tv-title,
+.tv-section-heading {
   font-size: 2em;
 }
 
-.movie-overview {
+.tv-overview {
   font-size: 0.875em;
 
   @media screen and (min-width: 600px) {
@@ -274,7 +274,7 @@ export default {
   }
 }
 
-.director {
+.producer {
   font-size: 0.875rem;
 
   a {

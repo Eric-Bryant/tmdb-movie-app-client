@@ -8,8 +8,8 @@
         cols="12"
         sm="6"
         md="4"
-        v-for="list in userLists"
-        :key="list.index"
+        v-for="(list, index) in userLists"
+        :key="index"
       >
         <ListCard :list="list" />
       </v-col>

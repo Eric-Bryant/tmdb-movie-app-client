@@ -41,13 +41,13 @@
         ></v-text-field>
         <v-btn
           block
-          color="primary"
+          color="success"
           @click="signUp"
           :disabled="!valid"
           :loading="loggingIn"
           >Sign Up</v-btn
         >
-        <v-btn block class="mt-2" color="warning" @click="reset">Reset</v-btn>
+        <v-btn block class="mt-2" color="error" @click="reset">Reset</v-btn>
         <v-btn
           class="mt-2"
           block

@@ -39,26 +39,12 @@ export default {
     }
   },
   getters: {
-    getDisplayName: state => {
-      return state.user.data.displayName
-    },
-    getEmail: state => {
-      return state.user.data.email
-    },
-    getFirstName: state => {
-      return state.user.data.displayName.split(' ')[0]
-    },
-    getLastName: state => {
-      return state.user.data.displayName.split(' ')[1]
-    },
-    getAvatar: state => {
-      return state.user.data.avatar
-    },
-    getUID: state => {
-      return state.user.data.uid
-    },
-    loggedIn: state => {
-      return state.user.loggedIn
-    }
+    getDisplayName: state => state.user.data.displayName,
+    getEmail: state => state.user.data.email,
+    getFirstName: state => state.user.data.displayName.split(' ')[0],
+    getLastName: state => state.user.data.displayName.split(' ')[1],
+    getAvatar: state => state.user.data.avatar,
+    getUID: state => state.user.data.uid,
+    loggedIn: state => state.user.loggedIn
   }
 }

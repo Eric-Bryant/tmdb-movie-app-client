@@ -14,8 +14,8 @@
         </v-toolbar>
         <v-list three-line dense v-if="results.length > 0" light>
           <v-list-item
-            v-for="result in results"
-            :key="result.id"
+            v-for="(result, index) in results"
+            :key="index"
             @click="goToDetails(result)"
           >
             <v-list-item-avatar v-if="result.image">

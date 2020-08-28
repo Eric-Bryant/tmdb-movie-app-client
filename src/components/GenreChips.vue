@@ -1,6 +1,6 @@
 <template>
-  <v-slide-group v-if="movie.genres.length > 0">
-    <v-slide-item v-for="genre in movie.genres" :key="genre.id">
+  <v-slide-group v-if="media.genres.length > 0">
+    <v-slide-item v-for="(genre, index) in media.genres" :key="index">
       <v-chip
         :to="`/genre/${genre.id}`"
         color="secondary"
@@ -15,7 +15,7 @@
 export default {
   name: 'GenreChips',
   props: {
-    movie: {
+    media: {
       type: Object,
       required: true
     }

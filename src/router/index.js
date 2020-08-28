@@ -18,6 +18,12 @@ const routes = [
       import(/* webpackChunkName: "moviedetails" */ '../views/MovieDetails.vue')
   },
   {
+    path: '/tv/:id',
+    name: 'TvDetails',
+    component: () =>
+      import(/* webpackChunkName: "tvdetails" */ '../views/TvDetails.vue')
+  },
+  {
     path: '/create-account',
     name: 'CreateAccount',
     component: () =>
@@ -35,13 +41,13 @@ const routes = [
       import(/* webpackChunkName: "userlists" */ '../views/UserLists.vue')
   },
   {
-    path: '/my-lists/watch-list',
-    name: 'UserWatchList',
+    path: '/my-lists/:name',
+    name: 'UserListTitles',
     meta: {
       requiresAuth: true
     },
     component: () =>
-      import(/* webpackChunkName: "watchlist" */ '../views/UserWatchList.vue')
+      import(/* webpackChunkName: "watchlist" */ '../views/UserListTitles.vue')
   },
   {
     path: '/login',
