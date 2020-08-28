@@ -1,9 +1,7 @@
 <template>
   <!-- Loading done & tv exists -->
   <div v-if="tvExists && !loadingDetails">
-    <v-container
-      class="d-xs-block d-sm-none trailer-container"
-      v-if="mediaVideos"
+    <v-container class="d-xs-block d-sm-none trailer-container" v-if="tvVideos"
       ><iframe
         width="100%"
         height="215"
@@ -33,12 +31,12 @@
               >
             </h1>
             <p class="tv-overview">{{ tv.overview }}</p>
-            <p class="producer">
+            <!-- <p class="producer">
               Producer:
               <router-link :to="`/person/${tvProducer.id}`">{{
                 tvProducer.name
               }}</router-link>
-            </p>
+            </p> -->
             <div class="d-flex align-center">
               <v-progress-circular
                 :color="tvRating"
@@ -111,10 +109,10 @@ export default {
     return {
       tv: {},
       tvExists: false,
-      mediaCredits: [],
+      tvCredits: [],
       tvCast: [],
       tvProducer: '',
-      mediaVideos: [],
+      tvVideos: [],
       similarTv: [],
       youtubeID: '',
       vimeoID: '',
@@ -198,15 +196,15 @@ export default {
     getTvTrailers() {
       apiClient.getTvTrailers(this.tv.id).then(result => {
         if (result.data) {
-          this.mediaVideos = result.data
-          if (this.mediaVideos.results.length > 1) {
-            this.mediaVideos.results.map(video => {
+          this.tvVideos = result.data
+          if (this.tvVideos.results.length > 1) {
+            this.tvVideos.results.map(video => {
               if (video.type == 'Trailer') {
                 this.youtubeID = video.key
               }
             })
-          } else if (this.mediaVideos.results.length == 1) {
-            this.youtubeID = this.mediaVideos.results[0].key
+          } else if (this.tvVideos.results.length == 1) {
+            this.youtubeID = this.tvVideos.results[0].key
           } else {
             this.youtubeID = ''
           }

@@ -24,6 +24,12 @@ const routes = [
       import(/* webpackChunkName: "tvdetails" */ '../views/TvDetails.vue')
   },
   {
+    path: '/person/:id',
+    name: 'PersonDetails',
+    component: () =>
+      import(/* webpackChunkName: "tvdetails" */ '../views/PersonDetails.vue')
+  },
+  {
     path: '/create-account',
     name: 'CreateAccount',
     component: () =>

@@ -51,5 +51,11 @@ export default {
   },
   getRecommendedTv(tvID) {
     return apiClient.get(`/tv/${tvID}/recommendations`)
+  },
+  getPersonDetails(personID) {
+    return apiClient.get(`/person/${personID}`)
+  },
+  getPersonCredits(personID) {
+    return apiClient.get(`/person/${personID}/combined_credits`)
   }
 }
