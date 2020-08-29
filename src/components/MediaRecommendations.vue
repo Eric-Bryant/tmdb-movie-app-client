@@ -19,7 +19,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import apiClient from '../services/apiCalls'
-import dbClient from '../services/dbCalls'
 import MediaCarouselCards from '../components/MediaCarouselCards'
 import BaseLoadingListSkeleton from '../components/BaseLoadingListSkeleton'
 
@@ -36,22 +35,34 @@ export default {
       allTitlesOnLists: []
     }
   },
+  watch: {
+    getLists: {
+      deep: true,
+      immediate: true,
+      handler: 'getRecommendations'
+    }
+  },
   computed: {
-    ...mapGetters(['getUID'])
+    ...mapGetters(['getUID', 'getLists'])
   },
   methods: {
-    async getRecommendations() {
-      const watchList = await dbClient.getUserWatchList(this.getUID)
-      const watchedList = await dbClient.getUserWatchedList(this.getUID)
+    getRecommendations() {
+      this.recommendations = []
 
-      this.allTitlesOnLists.push(...watchList)
-      this.allTitlesOnLists.push(...watchedList)
+      const lists = []
+      for (let list in this.getLists) {
+        for (let title in this.getLists[list].onList) {
+          lists.push(this.getLists[list].onList[title])
+        }
+      }
+
+      this.allTitlesOnLists = lists
 
       if (this.allTitlesOnLists.length === 0) {
         this.loading = false
       }
 
-      this.allTitlesOnLists.map(async (watchListTitle, index) => {
+      this.allTitlesOnLists.map((watchListTitle, index) => {
         let type
 
         if (watchListTitle.name || watchListTitle.original_name) {
@@ -59,7 +70,6 @@ export default {
         } else {
           type = 'Movie'
         }
-
         this.getRecommended(watchListTitle, type, index)
       })
     },
@@ -76,10 +86,10 @@ export default {
       if (recommendedMedia.data.results.length > 0) {
         for (let i = 0; i < 3; i++) {
           let recommendedMediaTitle = recommendedMedia.data.results[i]
-          const isOnList = await dbClient.checkIfMediaOnList(
-            this.getUID,
-            recommendedMediaTitle.id
-          )
+
+          const isOnList = this.allTitlesOnLists.some(title => {
+            return title.id === recommendedMediaTitle.id
+          })
 
           if (this.recommendations.length < 20 && !isOnList) {
             this.recommendations.push(recommendedMediaTitle)
@@ -91,10 +101,6 @@ export default {
         this.loading = false
       }
     }
-  },
-
-  created() {
-    this.getRecommendations()
   }
 }
 </script>

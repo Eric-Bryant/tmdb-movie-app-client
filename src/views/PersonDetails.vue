@@ -61,7 +61,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import apiClient from '../services/apiCalls'
-import dbClient from '../services/dbCalls'
 import BaseLoadingRoller from '../components/BaseLoadingRoller'
 import MediaCarouselCards from '../components/MediaCarouselCards'
 

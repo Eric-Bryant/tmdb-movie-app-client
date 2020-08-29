@@ -1,3 +1,6 @@
+import { firestoreAction } from 'vuexfire'
+import Firebase from '@/firebase'
+
 export default {
   state: {
     user: {
@@ -8,7 +11,8 @@ export default {
         avatar: '',
         uid: ''
       }
-    }
+    },
+    lists: {}
   },
   mutations: {
     SET_USER: (state, user) => {
@@ -36,7 +40,13 @@ export default {
   actions: {
     setUser: (context, user) => {
       context.commit('SET_USER', user)
-    }
+    },
+    bindLists: firestoreAction(({ state, bindFirestoreRef }) => {
+      return bindFirestoreRef(
+        'lists',
+        Firebase.db.collection('lists').doc(state.user.data.uid)
+      )
+    })
   },
   getters: {
     getDisplayName: state => state.user.data.displayName,
@@ -45,6 +55,7 @@ export default {
     getLastName: state => state.user.data.displayName.split(' ')[1],
     getAvatar: state => state.user.data.avatar,
     getUID: state => state.user.data.uid,
-    loggedIn: state => state.user.loggedIn
+    loggedIn: state => state.user.loggedIn,
+    getLists: state => state.lists
   }
 }

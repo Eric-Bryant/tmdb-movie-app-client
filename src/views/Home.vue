@@ -29,7 +29,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import ListCard from '../components/ListCard'
-import dbClient from '../services/dbCalls'
 import BaseLoadingListSkeleton from '../components/BaseLoadingListSkeleton'
 import MediaRecommendations from '../components/MediaRecommendations'
 
@@ -46,18 +45,26 @@ export default {
       loading: true
     }
   },
+  watch: {
+    getLists: {
+      deep: true,
+      immediate: true,
+      handler: 'getUsersLists'
+    }
+  },
   computed: {
-    ...mapGetters(['getDisplayName', 'loggedIn', 'getUID'])
+    ...mapGetters(['getDisplayName', 'loggedIn', 'getUID', 'getLists'])
   },
   methods: {
-    async getLists() {
-      const lists = await dbClient.getUsersLists(this.getUID)
+    getUsersLists() {
+      const lists = []
+      for (let key in this.getLists) {
+        lists.push(this.getLists[key])
+      }
+
       this.userLists = lists
       this.loading = false
     }
-  },
-  created() {
-    this.getLists()
   }
 }
 </script>

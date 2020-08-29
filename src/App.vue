@@ -35,6 +35,9 @@ export default {
     return {
       drawer: false
     }
+  },
+  created() {
+    this.$store.dispatch('bindLists')
   }
 }
 </script>

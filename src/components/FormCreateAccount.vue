@@ -63,7 +63,6 @@
 
 <script>
 import Firebase from '../firebase'
-import dbClient from '../services/dbCalls'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {

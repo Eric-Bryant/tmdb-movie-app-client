@@ -13,11 +13,6 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'AddRemoveButton',
   props: {
-    onList: {
-      type: Boolean,
-      default: false,
-      required: true
-    },
     mediaInfo: {
       type: Object,
       default: function() {
@@ -26,21 +21,44 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      onList: false
+    }
+  },
+  watch: {
+    getLists: {
+      deep: true,
+      immediate: true,
+      handler: 'checkIfOnList'
+    }
+  },
   computed: {
-    ...mapGetters(['getUID'])
+    ...mapGetters(['getUID', 'getLists'])
   },
   methods: {
     addToWatchList() {
       dbClient.addMediaToWatchList(this.getUID, this.mediaInfo)
-      this.$emit('added')
     },
     removeFromWatchList() {
       dbClient.removeMediaFromWatchList(this.getUID, this.mediaInfo.id)
-      this.$emit('removed')
     },
     addToWatched() {
       dbClient.addToWatchedList(this.getUID, this.mediaInfo)
-      this.$emit('removed')
+    },
+    checkIfOnList() {
+      const lists = []
+      for (let key in this.getLists) {
+        lists.push(this.getLists[key])
+      }
+
+      this.onList = false
+
+      lists.map(list => {
+        if (list.onList[this.mediaInfo.id]) {
+          this.onList = true
+        }
+      })
     }
   }
 }

@@ -4,14 +4,17 @@
       <div>
         <v-card-title>{{ list.name }}</v-card-title>
         <v-card-subtitle
-          >{{ list.length }}
-          {{ list.length > 1 || list.length == 0 ? 'titles' : 'title' }}
+          >{{ listLength }}
+          {{ listLength > 1 || listLength == 0 ? 'titles' : 'title' }}
           on this list</v-card-subtitle
         >
       </div>
       <v-spacer></v-spacer>
       <v-avatar class="ma-3" size="64" tile>
-        <v-img :src="listImageBaseURL + list.image" v-if="list.image"></v-img>
+        <v-img
+          :src="listImageBaseURL + listImagePath"
+          v-if="listImagePath"
+        ></v-img>
         <v-icon size="64" v-else>mdi-view-list</v-icon>
       </v-avatar>
     </div>
@@ -44,6 +47,17 @@ export default {
           return character.toLowerCase()
         })
         .join('')
+    },
+    listLength() {
+      return Object.keys(this.list.onList).length
+    },
+    listImagePath() {
+      const listKeys = Object.keys(this.list.onList)
+      if (listKeys.length > 0) {
+        return this.list.onList[listKeys[0]].poster_path
+      } else {
+        return null
+      }
     }
   }
 }

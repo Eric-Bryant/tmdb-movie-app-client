@@ -51,11 +51,8 @@
               <AddRemoveButton
                 class="ml-2"
                 v-if="loggedIn"
-                :onList="onList"
                 :mediaInfo="tv"
                 rounded="true"
-                @added="onList = true"
-                @removed="onList = false"
               />
             </div>
           </v-col>
@@ -96,7 +93,6 @@
 import { mapGetters } from 'vuex'
 import AddRemoveButton from '../components/AddRemoveButton'
 import apiClient from '../services/apiCalls'
-import dbClient from '../services/dbCalls'
 import BaseLoadingRoller from '../components/BaseLoadingRoller'
 import GenreChips from '../components/GenreChips'
 import MediaCarouselCards from '../components/MediaCarouselCards'
@@ -119,7 +115,6 @@ export default {
       similarTv: [],
       youtubeID: '',
       vimeoID: '',
-      onList: false,
       loadingDetails: true
     }
   },
@@ -165,9 +160,6 @@ export default {
             this.tvVideos = this.tv.videos.results
             this.similarTv = this.tv.similar.results
             this.tvExists = true
-            if (this.loggedIn) {
-              this.onList = await dbClient.checkIfMediaOnList(this.getUID, tvID)
-            }
 
             if (this.tvVideos.length > 1) {
               this.tvVideos.map(video => {

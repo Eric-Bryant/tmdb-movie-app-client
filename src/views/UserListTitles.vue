@@ -37,7 +37,6 @@ import { mapGetters } from 'vuex'
 import BaseLoadingRoller from '../components/BaseLoadingRoller'
 import MediaCard from '../components/MediaCard'
 import MediaCarouselCards from '../components/MediaCarouselCards'
-import dbClient from '../services/dbCalls'
 
 export default {
   name: 'UserListTitles',
@@ -52,17 +51,20 @@ export default {
       loading: true
     }
   },
+  watch: {
+    getLists: {
+      deep: true,
+      immediate: true,
+      handler: 'getListTitles'
+    }
+  },
   computed: {
-    ...mapGetters(['getUID']),
+    ...mapGetters(['getUID', 'getLists']),
     listName() {
-      let words = this.$route.params.name.replace('-', ' ').split(' ')
+      let words = this.$route.params.name.split('-')
       const capitalizedWords = words.map(word => {
         return capitalizeFirstLetter(word)
       })
-
-      if (capitalizedWords.indexOf('List') < 0) {
-        capitalizedWords.push('List')
-      }
 
       return capitalizedWords.join(' ')
 
@@ -71,17 +73,20 @@ export default {
       }
     }
   },
-  async created() {
-    if (this.$route.params.name === 'watched') {
-      dbClient.getUserWatchedList(this.getUID).then(watchedList => {
-        this.userListTitles = watchedList
-        this.loading = false
+  methods: {
+    getListTitles() {
+      let list = []
+      for (let key in this.getLists) {
+        if (this.listName == this.getLists[key].name) {
+          list = this.getLists[key].onList
+        }
+      }
+
+      this.userListTitles = Object.keys(list).map(title => {
+        return list[title]
       })
-    } else {
-      dbClient.getUserWatchList(this.getUID).then(watchList => {
-        this.userListTitles = watchList
-        this.loading = false
-      })
+
+      this.loading = false
     }
   }
 }

@@ -18,7 +18,6 @@
 </template>
 
 <script>
-import dbClient from '../services/dbCalls'
 import { mapGetters } from 'vuex'
 import ListCard from '../components/ListCard'
 import BaseLoadingListSkeleton from '../components/BaseLoadingListSkeleton'
@@ -35,18 +34,26 @@ export default {
       loading: true
     }
   },
+  watch: {
+    getLists: {
+      deep: true,
+      immediate: true,
+      handler: 'getUsersLists'
+    }
+  },
   computed: {
-    ...mapGetters(['getUID'])
+    ...mapGetters(['getUID', 'getLists'])
   },
   methods: {
-    async getLists() {
-      const lists = await dbClient.getUsersLists(this.getUID)
+    getUsersLists() {
+      const lists = []
+      for (let key in this.getLists) {
+        lists.push(this.getLists[key])
+      }
+
       this.userLists = lists
       this.loading = false
     }
-  },
-  created() {
-    this.getLists()
   }
 }
 </script>

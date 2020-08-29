@@ -51,11 +51,8 @@
               <AddRemoveButton
                 class="ml-2"
                 v-if="loggedIn"
-                :onList="onList"
                 :mediaInfo="movie"
                 rounded="true"
-                @added="onList = true"
-                @removed="onList = false"
               />
             </div>
           </v-col>
@@ -99,7 +96,6 @@
 import { mapGetters } from 'vuex'
 import AddRemoveButton from '../components/AddRemoveButton'
 import apiClient from '../services/apiCalls'
-import dbClient from '../services/dbCalls'
 import BaseLoadingRoller from '../components/BaseLoadingRoller'
 import GenreChips from '../components/GenreChips'
 import MediaCarouselCards from '../components/MediaCarouselCards'
@@ -122,12 +118,17 @@ export default {
       similarMovies: [],
       youtubeID: '',
       vimeoID: '',
-      onList: false,
       loadingDetails: true
     }
   },
+  watch: {
+    $route(to, from) {
+      this.loadingDetails = true
+      this.getMovieDetails(to.params.id)
+    }
+  },
   computed: {
-    ...mapGetters(['getUID', 'loggedIn']),
+    ...mapGetters(['getUID', 'loggedIn', 'getLists']),
     moviePoster() {
       return `https://image.tmdb.org/t/p/w500/${this.movie.poster_path}`
     },
@@ -150,12 +151,6 @@ export default {
       }
     }
   },
-  watch: {
-    $route(to, from) {
-      this.loadingDetails = true
-      this.getMovieDetails(to.params.id)
-    }
-  },
   methods: {
     getMovieDetails(mediaID) {
       apiClient
@@ -168,12 +163,6 @@ export default {
             this.similarMovies = this.movie.similar.results
             this.movieVideos = this.movie.videos.results
             this.movieExists = true
-            if (this.loggedIn) {
-              this.onList = await dbClient.checkIfMediaOnList(
-                this.getUID,
-                mediaID
-              )
-            }
             movieCredits.crew.map(crewMember => {
               if (crewMember.job == 'Director') {
                 this.movieDirector = crewMember
