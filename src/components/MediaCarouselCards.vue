@@ -14,7 +14,7 @@
       <v-slide-item v-for="(item, index) in info" :key="index">
         <MediaCard
           width="100px"
-          height="115"
+          height="115px"
           :media="item"
           :amount="info.length"
         />
