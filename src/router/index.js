@@ -12,19 +12,19 @@ const routes = [
     component: Home
   },
   {
-    path: '/movie/:id',
+    path: '/movie/:id/',
     name: 'MovieDetails',
     component: () =>
       import(/* webpackChunkName: "moviedetails" */ '../views/MovieDetails.vue')
   },
   {
-    path: '/tv/:id',
+    path: '/tv/:id/',
     name: 'TvDetails',
     component: () =>
       import(/* webpackChunkName: "tvdetails" */ '../views/TvDetails.vue')
   },
   {
-    path: '/person/:id',
+    path: '/person/:id/',
     name: 'PersonDetails',
     component: () =>
       import(
@@ -32,7 +32,7 @@ const routes = [
       )
   },
   {
-    path: '/search/:query',
+    path: '/search/:searchQuery/',
     name: 'SearchResults',
     component: () =>
       import(
@@ -40,7 +40,7 @@ const routes = [
       )
   },
   {
-    path: '/my-lists',
+    path: '/my-lists/',
     name: 'UserLists',
     meta: {
       requiresAuth: true
@@ -49,7 +49,7 @@ const routes = [
       import(/* webpackChunkName: "userlists" */ '../views/UserLists.vue')
   },
   {
-    path: '/my-lists/:name',
+    path: '/my-lists/:name/',
     name: 'UserListTitles',
     meta: {
       requiresAuth: true
@@ -58,7 +58,7 @@ const routes = [
       import(/* webpackChunkName: "userlist" */ '../views/UserListTitles.vue')
   },
   {
-    path: '/create-account',
+    path: '/create-account/',
     name: 'CreateAccount',
     component: () =>
       import(
@@ -66,7 +66,7 @@ const routes = [
       )
   },
   {
-    path: '/login',
+    path: '/login/',
     name: 'Login',
     component: () =>
       import(/* webpackChunkName: "login" */ '../views/Login.vue')

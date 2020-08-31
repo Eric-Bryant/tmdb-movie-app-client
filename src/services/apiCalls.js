@@ -10,17 +10,29 @@ const apiClient = axios.create({
 })
 
 export default {
-  searchMulti(query) {
-    return apiClient.get(`/search/multi/${query}`)
+  searchMulti(query, page) {
+    if (!page) {
+      page = 1
+    }
+    return apiClient.get(`/search/multi/${query}/?page=${page}`)
   },
-  searchPerson(query) {
-    return apiClient.get(`/search/person/${query}`)
+  searchPerson(query, page) {
+    if (!page) {
+      page = 1
+    }
+    return apiClient.get(`/search/person/${query}/?page=${page}`)
   },
-  searchMovie(query) {
-    return apiClient.get(`/search/movie/${query}`)
+  searchMovie(query, page) {
+    if (!page) {
+      page = 1
+    }
+    return apiClient.get(`/search/movie/${query}/?page=${page}`)
   },
-  searchTV(query) {
-    return apiClient.get(`/search/tv/${query}`)
+  searchTV(query, page) {
+    if (!page) {
+      page = 1
+    }
+    return apiClient.get(`/search/tv/${query}/?page=${page}`)
   },
   getMovieDetails(movieID) {
     return apiClient.get(`/movie/${movieID}`)
