@@ -27,14 +27,16 @@ const routes = [
     path: '/person/:id',
     name: 'PersonDetails',
     component: () =>
-      import(/* webpackChunkName: "tvdetails" */ '../views/PersonDetails.vue')
+      import(
+        /* webpackChunkName: "persondetails" */ '../views/PersonDetails.vue'
+      )
   },
   {
-    path: '/create-account',
-    name: 'CreateAccount',
+    path: '/search/:query',
+    name: 'SearchResults',
     component: () =>
       import(
-        /* webpackChunkName: "createaccount" */ '../views/CreateAccount.vue'
+        /* webpackChunkName: "searchresults" */ '../views/SearchResults.vue'
       )
   },
   {
@@ -53,7 +55,15 @@ const routes = [
       requiresAuth: true
     },
     component: () =>
-      import(/* webpackChunkName: "watchlist" */ '../views/UserListTitles.vue')
+      import(/* webpackChunkName: "userlist" */ '../views/UserListTitles.vue')
+  },
+  {
+    path: '/create-account',
+    name: 'CreateAccount',
+    component: () =>
+      import(
+        /* webpackChunkName: "createaccount" */ '../views/CreateAccount.vue'
+      )
   },
   {
     path: '/login',

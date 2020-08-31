@@ -41,6 +41,7 @@
             </p>
             <div class="d-flex align-center">
               <v-progress-circular
+                v-if="movie.vote_average > 0"
                 :color="movieRating"
                 rotate="270"
                 size="64"

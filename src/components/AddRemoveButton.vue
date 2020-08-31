@@ -1,35 +1,37 @@
 <template>
-  <div v-if="onList">
-    <v-menu offset-y>
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn color="error" v-bind="attrs" v-on="on">Remove</v-btn>
-      </template>
-      <v-list>
-        <v-list-item
-          v-for="(list, index) in onTheseLists"
-          :key="index"
-          @click="removeFromList(list.name)"
-        >
-          <v-list-item-title>{{ list.name }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
-  </div>
-  <div v-else>
-    <v-menu offset-y>
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn color="accent" v-bind="attrs" v-on="on">Add</v-btn>
-      </template>
-      <v-list>
-        <v-list-item
-          v-for="(list, index) in lists"
-          :key="index"
-          @click="addToList(list.name)"
-        >
-          <v-list-item-title>{{ list.name }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
+  <div>
+    <div v-show="onList">
+      <v-menu offset-y attach>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn color="error" v-bind="attrs" v-on="on">Remove</v-btn>
+        </template>
+        <v-list dense>
+          <v-list-item
+            v-for="(list, index) in onTheseLists"
+            :key="index"
+            @click="removeFromList(list.name)"
+          >
+            <v-list-item-title>{{ list.name }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </div>
+    <div v-show="!onList">
+      <v-menu offset-y attach>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn color="accent" v-bind="attrs" v-on="on">Add</v-btn>
+        </template>
+        <v-list dense>
+          <v-list-item
+            v-for="(list, index) in listInOrder"
+            :key="index"
+            @click="addToList(list.name)"
+          >
+            <v-list-item-title>{{ list.name }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </div>
   </div>
 </template>
 
@@ -64,15 +66,15 @@ export default {
   computed: {
     ...mapGetters(['getUID', 'getLists']),
     onTheseLists() {
-      return this.lists.filter(list => {
+      return this.listInOrder.filter(list => {
         return list.isOnThisList === true
       })
+    },
+    listInOrder() {
+      return [...this.lists].sort()
     }
   },
   methods: {
-    addToWatchList() {
-      dbClient.addMediaToWatchList(this.getUID, this.mediaInfo)
-    },
     addToList(listName) {
       let fieldName
       for (let key in this.getLists) {
@@ -92,12 +94,6 @@ export default {
       }
 
       dbClient.removeFromList(this.getUID, this.mediaInfo.id, fieldName)
-    },
-    removeFromWatchList() {
-      dbClient.removeMediaFromWatchList(this.getUID, this.mediaInfo.id)
-    },
-    addToWatched() {
-      dbClient.addToWatchedList(this.getUID, this.mediaInfo)
     },
     checkIfOnList() {
       this.lists = []
