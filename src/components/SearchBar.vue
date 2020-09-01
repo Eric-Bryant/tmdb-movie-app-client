@@ -28,17 +28,20 @@
       return-object
       prepend-inner-icon="mdi-magnify"
       @change="goToDetails"
-      @click:prepend-inner="sendToResultsPage"
+      @click:prepend-inner="goToDetails"
       class="search-form-group__autocomplete"
     >
       <template v-slot:item="data">
-        <template v-if="typeof data.item !== 'object'">
-          <v-list-item-content v-text="data.item.title"></v-list-item-content>
+        <template v-if="data.item.isSearch">
+          <v-list-item-content
+            v-text="data.item.title"
+            @click="goToDetails"
+          ></v-list-item-content>
         </template>
         <template v-else>
-          <v-list-item-avatar v-if="data.item.image">
+          <v-list-item-avatar v-if="resultImage(data)">
             <img
-              :src="'https://image.tmdb.org/t/p/w92/' + data.item.image"
+              :src="'https://image.tmdb.org/t/p/w92/' + resultImage(data)"
               class="avatar"
             />
           </v-list-item-avatar>
@@ -49,7 +52,9 @@
             <v-list-item-title
               v-html="
                 data.item.title +
-                  `${data.item.release ? ' (' + data.item.release + ')' : ''}`
+                  `${
+                    resultRelease(data) ? ' (' + resultRelease(data) + ')' : ''
+                  }`
               "
             ></v-list-item-title>
           </v-list-item-content>
@@ -62,8 +67,8 @@
       hide-details
       dense
       append-icon="mdi-magnify"
-      @keyup.enter="sendToResultsPage"
-      @click:append="sendToResultsPage"
+      @keyup.enter="goToDetails"
+      @click:append="goToDetails"
       v-model="search"
       class="search-form-group__text-field"
     >
@@ -104,6 +109,24 @@ export default {
     }
   },
   methods: {
+    resultImage(data) {
+      if (data.item.poster_path) {
+        return data.item.poster_path
+      } else if (data.item.profile_path) {
+        return data.item.profile_path
+      } else {
+        return false
+      }
+    },
+    resultRelease(data) {
+      if (data.item.release_date) {
+        return data.item.release_date.split('-')[0]
+      } else if (data.item.first_air_date) {
+        return data.item.first_air_date.split('-')[0]
+      } else {
+        return false
+      }
+    },
     makeSearch() {
       if (this.search != null && this.search.replace(/\s+/g, '') != '') {
         let apiSearch
@@ -128,30 +151,32 @@ export default {
         apiSearch(this.search)
           .then(response => {
             this.items = response.data.results.map(result => {
-              const resultObject = {}
-              resultObject.title = result.title || result.name
-              resultObject.image = result.poster_path || result.profile_path
-              if (result.media_type) {
-                resultObject.media_type =
-                  result.media_type.charAt(0).toUpperCase() +
-                  result.media_type.slice(1)
+              if (!result.media_type) {
+                if (result.original_name) {
+                  result.media_type = 'tv'
+                } else if (result.title) {
+                  result.media_type = 'movie'
+                } else if (result.known_for_department) {
+                  result.media_type = 'person'
+                } else {
+                  result.media_type = 'none'
+                }
               }
-              resultObject.release =
-                result.release_date || result.first_air_date || undefined
-              if (resultObject.release) {
-                resultObject.release = resultObject.release.split('-')[0]
-              }
-              if (result.overview) {
-                resultObject.overview = result.overview
-              }
-              resultObject.id = result.id
-              return resultObject
+              result.title = result.title || result.name
+
+              return result
+            })
+
+            this.items.push({
+              title: `Search for ${this.search}...`,
+              isSearch: true,
+              query: this.search
             })
 
             this.loading = false
           })
           .catch(error => {
-            console.log('There was an error:', error.response)
+            console.log('There was an error:', error)
           })
 
         if (this.onModal) {
@@ -162,30 +187,18 @@ export default {
       }
     },
     goToDetails() {
-      if (
-        this.searchQuery.media_type == 'Movie' ||
-        this.searchType == 'Movies'
-      ) {
+      if (this.searchQuery.media_type == 'movie') {
         this.$router.push(`/movie/${this.searchQuery.id}`)
-      } else if (
-        this.searchQuery.media_type == 'Tv' ||
-        this.searchType == 'TV'
-      ) {
+      } else if (this.searchQuery.media_type == 'tv') {
         this.$router.push(`/tv/${this.searchQuery.id}`)
-      } else if (
-        this.searchQuery.media_type == 'Person' ||
-        this.searchType == 'People'
-      ) {
+      } else if (this.searchQuery.media_type == 'person') {
         this.$router.push(`/person/${this.searchQuery.id}`)
+      } else {
+        this.$router.push(`/search/${this.search}/?type=${this.searchType}`)
       }
       this.$emit('closeModal')
       this.searchQuery = ''
       this.search = ''
-    },
-    sendToResultsPage() {
-      this.$router.push(`/search/${this.search}`)
-      this.search = ''
-      this.$emit('closeModal')
     }
   }
 }

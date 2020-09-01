@@ -18,26 +18,36 @@
             :key="index"
             @click="goToDetails(result)"
           >
-            <v-list-item-avatar v-if="result.image">
-              <img
-                :src="'https://image.tmdb.org/t/p/w92/' + result.image"
-                class="avatar"
-              />
-            </v-list-item-avatar>
-            <v-list-item-avatar v-else class="secondary">
-              <span class="white--text">??</span>
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title
-                >{{ result.title }}
-                {{
-                  result.release ? `(${result.release})` : ''
-                }}</v-list-item-title
-              >
-              <v-list-item-subtitle>{{
-                result.overview ? result.overview : ''
-              }}</v-list-item-subtitle>
-            </v-list-item-content>
+            <div class="d-flex" v-if="result.isSearch">
+              <v-list-item-avatar>
+                <v-icon color="secondary">mdi-magnify</v-icon>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title>{{ result.title }}</v-list-item-title>
+              </v-list-item-content>
+            </div>
+            <div class="d-flex" v-else>
+              <v-list-item-avatar v-if="resultImage(result)">
+                <img
+                  :src="'https://image.tmdb.org/t/p/w92/' + resultImage(result)"
+                  class="avatar"
+                />
+              </v-list-item-avatar>
+              <v-list-item-avatar v-else class="secondary">
+                <span class="white--text">??</span>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title
+                  >{{ result.title }}
+                  {{
+                    resultRelease(result) ? `(${resultRelease(result)})` : ''
+                  }}</v-list-item-title
+                >
+                <v-list-item-subtitle>{{
+                  result.overview ? result.overview : ''
+                }}</v-list-item-subtitle>
+              </v-list-item-content>
+            </div>
           </v-list-item>
         </v-list>
       </v-card>
@@ -74,17 +84,37 @@ export default {
       this.results = {}
       this.$emit('closeModal')
     },
+    resultImage(result) {
+      if (result.poster_path) {
+        return result.poster_path
+      } else if (result.profile_path) {
+        return result.profile_path
+      } else {
+        return false
+      }
+    },
+    resultRelease(result) {
+      if (result.release_date) {
+        return result.release_date.split('-')[0]
+      } else if (result.first_air_date) {
+        return result.first_air_date.split('-')[0]
+      } else {
+        return false
+      }
+    },
     getResults(results) {
       this.results = results.items
       this.searchType = results.searchType
     },
     goToDetails(result) {
-      if (result.media_type == 'Movie' || this.searchType == 'Movies') {
+      if (result.media_type == 'movie') {
         this.$router.push(`/movie/${result.id}`)
-      } else if (result.media_type == 'Tv' || this.searchType == 'TV') {
+      } else if (result.media_type == 'tv') {
         this.$router.push(`/tv/${result.id}`)
-      } else if (result.media_type == 'Person' || this.searchType == 'People') {
+      } else if (result.media_type == 'person') {
         this.$router.push(`/person/${result.id}`)
+      } else {
+        this.$router.push(`/search/${result.query}/?type=${this.searchType}`)
       }
       this.$emit('closeModal')
       this.results = {}
