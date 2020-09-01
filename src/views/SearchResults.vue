@@ -2,21 +2,6 @@
   <v-container>
     <div v-if="searchResults.length > 0">
       <h1>Search Results For: {{ searchQuery }}</h1>
-      <p>Page: {{ currentPage }} of {{ totalPages }}</p>
-      <v-btn
-        v-if="currentPage - 1 != 0"
-        :to="
-          `/search/${searchQuery}/?page=${currentPage - 1}&type=${searchType}`
-        "
-        >Previous Page</v-btn
-      >
-      <v-btn
-        v-if="currentPage + 1 <= totalPages"
-        :to="
-          `/search/${searchQuery}/?page=${currentPage + 1}&type=${searchType}`
-        "
-        >Next Page</v-btn
-      >
       <v-row no-gutters v-if="!loading">
         <v-col cols="4" sm="2" v-for="title in searchResults" :key="title.id">
           <MediaCard
@@ -33,6 +18,14 @@
           />
         </v-col>
       </v-row>
+      <div class="text-center my-8">
+        <v-pagination
+          v-model="currentPage"
+          :length="totalPages"
+          total-visible="10"
+          @input="changePage"
+        ></v-pagination>
+      </div>
     </div>
     <div v-else-if="!loading && searchResults.length == 0">
       No results found for {{ searchQuery }}.
@@ -114,6 +107,11 @@ export default {
             this.loading = false
           })
       }
+    },
+    changePage() {
+      this.$router.push(
+        `/search/${this.searchQuery}/?page=${this.currentPage}&type=${this.searchType}`
+      )
     }
   },
   created() {
