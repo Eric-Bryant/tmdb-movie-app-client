@@ -1,14 +1,9 @@
 <template>
   <v-container>
-    <v-skeleton-loader type="card-heading" v-if="loading && loggedIn" />
-    <h1 class="mb-2" v-else>
-      Hi {{ loggedIn ? getDisplayName : 'Anonymous' }}!
-    </h1>
+    <h1 class="mb-2">Hi {{ loggedIn ? getDisplayName : 'Anonymous' }}!</h1>
     <div v-if="loggedIn">
-      <v-skeleton-loader type="card-heading" v-if="loading" />
-      <h2 v-else>Your Lists</h2>
-      <BaseLoadingListSkeleton v-if="loading" :amount="3" />
-      <v-row v-else-if="userLists.length > 0 && !loading">
+      <h2>Your Lists</h2>
+      <v-row>
         <v-col
           cols="12"
           sm="6"
@@ -19,8 +14,7 @@
           <ListCard :list="list" />
         </v-col>
       </v-row>
-      <v-skeleton-loader type="card-heading" v-if="loading" />
-      <h2 v-else>Recommendations For You</h2>
+      <h2>Recommendations For You</h2>
       <MediaRecommendations />
     </div>
   </v-container>
@@ -29,14 +23,12 @@
 <script>
 import { mapGetters } from 'vuex'
 import ListCard from '../components/ListCard'
-import BaseLoadingListSkeleton from '../components/BaseLoadingListSkeleton'
 import MediaRecommendations from '../components/MediaRecommendations'
 
 export default {
   name: 'Home',
   components: {
     ListCard,
-    BaseLoadingListSkeleton,
     MediaRecommendations
   },
   data() {

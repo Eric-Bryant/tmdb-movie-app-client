@@ -1,9 +1,7 @@
 <template>
   <v-container>
-    <v-skeleton-loader type="card-heading" v-if="loading" />
-    <h1 v-else>Your Lists</h1>
-    <BaseLoadingListSkeleton v-if="loading" :amount="3" />
-    <v-row v-else-if="userLists.length > 0 && !loading">
+    <h1>Your Lists</h1>
+    <v-row>
       <v-col
         cols="12"
         sm="6"
@@ -20,12 +18,10 @@
 <script>
 import { mapGetters } from 'vuex'
 import ListCard from '../components/ListCard'
-import BaseLoadingListSkeleton from '../components/BaseLoadingListSkeleton'
 
 export default {
   name: 'UserLists',
   components: {
-    BaseLoadingListSkeleton,
     ListCard
   },
   data() {

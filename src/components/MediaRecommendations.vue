@@ -1,15 +1,9 @@
 <template>
   <div>
-    <div v-if="loading">
-      <BaseLoadingListSkeleton :amount="3" />
-    </div>
-    <div v-else>
-      <MediaCarouselCards
-        :info="recommendations"
-        :amount="recommendations.length"
-      />
-    </div>
-    <v-skeleton-loader type="card-heading" v-if="loading" />
+    <MediaCarouselCards
+      :info="recommendations"
+      :amount="recommendations.length"
+    />
     <p v-if="!loading && recommendations.length === 0">
       No Recommendations.
     </p>
@@ -20,13 +14,11 @@
 import { mapGetters } from 'vuex'
 import apiClient from '../services/apiCalls'
 import MediaCarouselCards from '../components/MediaCarouselCards'
-import BaseLoadingListSkeleton from '../components/BaseLoadingListSkeleton'
 
 export default {
   name: 'MediaRecommendations',
   components: {
-    MediaCarouselCards,
-    BaseLoadingListSkeleton
+    MediaCarouselCards
   },
   data() {
     return {

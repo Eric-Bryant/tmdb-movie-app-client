@@ -1,37 +1,53 @@
 <template>
-  <v-container>
-    <div v-if="searchResults.length > 0">
-      <h1>Search Results For: {{ searchQuery }}</h1>
-      <v-row no-gutters v-if="!loading">
-        <v-col cols="4" sm="2" v-for="title in searchResults" :key="title.id">
-          <MediaCard
-            width="185px"
-            height="250px"
-            :media="title"
-            class="d-none d-sm-block"
-          />
-          <MediaCard
-            width="100px"
-            height="115px"
-            :media="title"
-            class="d-block d-sm-none"
-          />
-        </v-col>
-      </v-row>
-      <div class="text-center my-8">
-        <v-pagination
-          v-model="currentPage"
-          :length="totalPages"
-          total-visible="10"
-          @input="changePage"
-        ></v-pagination>
-      </div>
+  <v-container v-if="searchResults.length > 0">
+    <h1>Search Results For: {{ searchQuery }}</h1>
+    <v-select
+      v-model="searchType"
+      dense
+      :items="['All', 'Movies', 'TV', 'People']"
+      prefix="Filter By: "
+      outlined
+      @change="filterResultByType"
+      hide-details
+    ></v-select>
+    <v-row no-gutters v-if="!loading">
+      <v-col cols="4" sm="2" v-for="title in searchResults" :key="title.id">
+        <MediaCard
+          width="185px"
+          height="250px"
+          :media="title"
+          class="d-none d-sm-block"
+        />
+        <MediaCard
+          width="100px"
+          height="115px"
+          :media="title"
+          class="d-block d-sm-none"
+        />
+      </v-col>
+    </v-row>
+    <div class="text-center my-8">
+      <v-pagination
+        v-model="currentPage"
+        :length="totalPages"
+        total-visible="10"
+        @input="changePage"
+      ></v-pagination>
     </div>
-    <div v-else-if="!loading && searchResults.length == 0">
-      No results found for {{ searchQuery }}.
+  </v-container>
+  <v-container
+    fill-height
+    class="justify-center"
+    v-else-if="!loading && searchResults.length == 0"
+  >
+    <div class="align-center">
+      <h1 class="text-uppercase">No results found for {{ searchQuery }}.</h1>
     </div>
-    <div v-else>
-      Loading
+  </v-container>
+  <v-container fill-height class="justify-center" v-else>
+    <div class="d-flex align-center flex-column">
+      <h1 class="mb-2 text-uppercase text-center">Loading details...</h1>
+      <BaseLoadingRoller />
     </div>
   </v-container>
 </template>
@@ -39,10 +55,12 @@
 <script>
 import MediaCard from '../components/MediaCard'
 import apiClient from '../services/apiCalls'
+import BaseLoadingRoller from '../components/BaseLoadingRoller'
 export default {
   name: 'SearchResults',
   components: {
-    MediaCard
+    MediaCard,
+    BaseLoadingRoller
   },
   data() {
     return {
@@ -51,7 +69,8 @@ export default {
       searchType: '',
       totalPages: '',
       currentPage: 1,
-      loading: true
+      loading: true,
+      genre: ''
     }
   },
   watch: {
@@ -73,7 +92,6 @@ export default {
       this.searchForQuery()
     }
   },
-  computed: {},
   methods: {
     searchForQuery() {
       if (this.searchType === 'Movies') {
@@ -107,6 +125,9 @@ export default {
             this.loading = false
           })
       }
+    },
+    filterResultByType() {
+      this.$router.push(`/search/${this.searchQuery}/?type=${this.searchType}`)
     },
     changePage() {
       this.$router.push(
