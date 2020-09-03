@@ -88,7 +88,7 @@ export default {
       } else {
         this.searchType = 'All'
       }
-
+      this.setTitleTag()
       this.searchForQuery()
     }
   },
@@ -133,6 +133,9 @@ export default {
       this.$router.push(
         `/search/${this.searchQuery}/?page=${this.currentPage}&type=${this.searchType}`
       )
+    },
+    setTitleTag() {
+      document.title = `Search results for ${this.searchQuery} | Page ${this.currentPage} | My Media Lists`
     }
   },
   created() {
@@ -147,7 +150,7 @@ export default {
     } else {
       this.searchType = 'All'
     }
-
+    this.setTitleTag()
     this.searchForQuery()
   }
 }

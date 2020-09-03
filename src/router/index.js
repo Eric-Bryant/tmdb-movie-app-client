@@ -9,7 +9,10 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta: {
+      title: 'My Media Lists'
+    }
   },
   {
     path: '/movie/:id/',
@@ -43,6 +46,7 @@ const routes = [
     path: '/my-lists/',
     name: 'UserLists',
     meta: {
+      title: 'My Lists | My Media Lists',
       requiresAuth: true
     },
     component: () =>
@@ -60,6 +64,9 @@ const routes = [
   {
     path: '/create-account/',
     name: 'CreateAccount',
+    meta: {
+      title: 'Create an Account | My Media Lists'
+    },
     component: () =>
       import(
         /* webpackChunkName: "createaccount" */ '../views/CreateAccount.vue'
@@ -68,6 +75,9 @@ const routes = [
   {
     path: '/login/',
     name: 'Login',
+    meta: {
+      title: 'Login | My Media Lists'
+    },
     component: () =>
       import(/* webpackChunkName: "login" */ '../views/Login.vue')
   }
@@ -82,6 +92,13 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  const nearestWithTitle = to.matched
+    .slice()
+    .reverse()
+    .find(r => r.meta && r.meta.title)
+
+  if (nearestWithTitle) document.title = nearestWithTitle.meta.title
+
   const requiresAuth = to.matched.some(x => x.meta.requiresAuth)
   if (requiresAuth && !Firebase.auth.currentUser) {
     next('/login')

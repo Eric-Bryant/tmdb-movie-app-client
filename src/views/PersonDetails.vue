@@ -140,6 +140,7 @@ export default {
         })
         .finally(() => {
           this.loadingDetails = false
+          document.title = `${this.person.name} | My Media Lists`
         })
     }
   },

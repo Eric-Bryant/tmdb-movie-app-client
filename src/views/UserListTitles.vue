@@ -87,6 +87,10 @@ export default {
       })
 
       this.loading = false
+      this.setTitleTag()
+    },
+    setTitleTag() {
+      document.title = `${this.listName} | My Media Lists`
     }
   }
 }

@@ -182,6 +182,7 @@ export default {
         })
         .finally(() => {
           this.loadingDetails = false
+          document.title = `${this.tv.name} | My Media Lists`
         })
     }
   },

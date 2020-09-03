@@ -191,6 +191,7 @@ export default {
         })
         .finally(() => {
           this.loadingDetails = false
+          document.title = `${this.movie.title} - Details | My Media Lists`
         })
     }
   },
