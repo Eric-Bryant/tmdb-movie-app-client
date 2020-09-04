@@ -1,7 +1,8 @@
 .DS_Store
 node_modules
+/dist
 firebase-debug.log
-firebase.js
+# firebase.js
 # local env files
 .env.local
 .env.*.local
