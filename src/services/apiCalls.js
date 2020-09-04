@@ -1,7 +1,9 @@
 import axios from 'axios'
+const liveUrl = 'https://mmlapi.ericmbryant.com'
+const devUrl = 'http://192.168.50.74:3000'
 
 const apiClient = axios.create({
-  baseURL: `http://192.168.50.74:3000`,
+  baseURL: liveUrl,
   withCredentials: false,
   headers: {
     Accept: 'application/json',
