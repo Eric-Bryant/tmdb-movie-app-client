@@ -2,10 +2,8 @@ import * as firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore'
 
-const apiKey = process.env.FIREBASE_KEY
-
 var firebaseConfig = {
-  apiKey: apiKey,
+  apiKey: 'AIzaSyAi07ZB9WuSZMNt5zIZXHZmzK8Ln8rs5Uo',
   authDomain: 'tmdb-movie-application.firebaseapp.com',
   databaseURL: 'https://tmdb-movie-application.firebaseio.com',
   projectId: 'tmdb-movie-application',
