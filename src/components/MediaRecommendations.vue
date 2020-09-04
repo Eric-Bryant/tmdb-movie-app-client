@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!loading">
     <MediaCarouselCards
       :info="recommendations"
       :amount="recommendations.length"
@@ -8,17 +8,22 @@
       No Recommendations.
     </p>
   </div>
+  <div class="d-flex justify-center" v-else>
+    <BaseLoadingRoller />
+  </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import apiClient from '../services/apiCalls'
 import MediaCarouselCards from '../components/MediaCarouselCards'
+import BaseLoadingRoller from '../components/BaseLoadingRoller'
 
 export default {
   name: 'MediaRecommendations',
   components: {
-    MediaCarouselCards
+    MediaCarouselCards,
+    BaseLoadingRoller
   },
   data() {
     return {

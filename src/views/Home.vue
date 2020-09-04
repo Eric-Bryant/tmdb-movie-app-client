@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container v-if="!loading">
     <h1 class="mb-2">Hi {{ loggedIn ? getDisplayName : 'Anonymous' }}!</h1>
     <div v-if="loggedIn">
       <h2>Your Lists</h2>
@@ -18,18 +18,27 @@
       <MediaRecommendations />
     </div>
   </v-container>
+  <!-- Loading -->
+  <v-container fill-height class="justify-center" v-else>
+    <div class="d-flex align-center flex-column">
+      <h1 class="mb-2 text-uppercase text-center">Loading...</h1>
+      <BaseLoadingRoller />
+    </div>
+  </v-container>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import ListCard from '../components/ListCard'
 import MediaRecommendations from '../components/MediaRecommendations'
+import BaseLoadingRoller from '../components/BaseLoadingRoller'
 
 export default {
   name: 'Home',
   components: {
     ListCard,
-    MediaRecommendations
+    MediaRecommendations,
+    BaseLoadingRoller
   },
   data() {
     return {
