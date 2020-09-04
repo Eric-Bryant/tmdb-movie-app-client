@@ -11,6 +11,9 @@ let app
 
 firebase.auth.onAuthStateChanged(user => {
   store.dispatch('setUser', user)
+  if (user) {
+    store.dispatch('bindLists')
+  }
   if (!app) {
     app = new Vue({
       router,
