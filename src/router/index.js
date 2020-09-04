@@ -92,12 +92,12 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const nearestWithTitle = to.matched
-    .slice()
-    .reverse()
-    .find(r => r.meta && r.meta.title)
+  // const nearestWithTitle = to.matched
+  //   .slice()
+  //   .reverse()
+  //   .find(r => r.meta && r.meta.title)
 
-  if (nearestWithTitle) document.title = nearestWithTitle.meta.title
+  // if (nearestWithTitle) document.title = nearestWithTitle.meta.title
 
   const requiresAuth = to.matched.some(x => x.meta.requiresAuth)
   if (requiresAuth && !Firebase.auth.currentUser) {
