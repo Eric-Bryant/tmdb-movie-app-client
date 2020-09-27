@@ -9,14 +9,15 @@
 
           <v-list-item-content>
             <v-list-item-title
-              >{{ titleName(title) }} ({{
-                releaseYear(title)
-              }})</v-list-item-title
+              >{{ titleName(title) }}
+              {{
+                releaseYear(title) ? `(${releaseYear(title)})` : ''
+              }}</v-list-item-title
             >
             <v-list-item-subtitle v-if="title.runtime">
               {{ title.runtime }}m
             </v-list-item-subtitle>
-            <v-list-item-subtitle>
+            <v-list-item-subtitle v-if="title.overview">
               {{ title.overview }}
               }}</v-list-item-subtitle
             >

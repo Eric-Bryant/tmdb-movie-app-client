@@ -10,22 +10,14 @@
       @change="filterResultByType"
       hide-details
     ></v-select>
-    <v-row no-gutters v-if="!loading">
-      <v-col cols="4" sm="2" v-for="title in searchResults" :key="title.id">
-        <MediaCard
-          width="185px"
-          height="250px"
-          :media="title"
-          class="d-none d-sm-block"
-        />
-        <MediaCard
-          width="100px"
-          height="115px"
-          :media="title"
-          class="d-block d-sm-none"
-        />
-      </v-col>
-    </v-row>
+    <div v-if="!loading">
+      <v-row no-gutters class="d-none d-sm-flex">
+        <v-col cols="4" sm="2" v-for="title in searchResults" :key="title.id">
+          <MediaCard width="185px" height="250px" :media="title" />
+        </v-col>
+      </v-row>
+      <MediaMobileList :info="searchResults" class="d-sm-none" />
+    </div>
     <div class="text-center my-8">
       <v-pagination
         v-model="currentPage"
@@ -56,11 +48,13 @@
 import MediaCard from '../components/MediaCard'
 import apiClient from '../services/apiCalls'
 import BaseLoadingRoller from '../components/BaseLoadingRoller'
+import MediaMobileList from '../components/MediaMobileList'
 export default {
   name: 'SearchResults',
   components: {
     MediaCard,
-    BaseLoadingRoller
+    BaseLoadingRoller,
+    MediaMobileList
   },
   data() {
     return {
