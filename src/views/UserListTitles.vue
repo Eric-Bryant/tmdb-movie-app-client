@@ -12,7 +12,7 @@
           <MediaCard width="185px" height="250px" :media="title" />
         </v-col>
       </v-row>
-      <MediaCarouselCards :info="userListTitles" class="d-flex d-sm-none" />
+      <MediaMobileList :info="userListTitles" class="d-sm-none" />
     </v-container>
   </div>
   <v-container
@@ -36,14 +36,14 @@
 import { mapGetters } from 'vuex'
 import BaseLoadingRoller from '../components/BaseLoadingRoller'
 import MediaCard from '../components/MediaCard'
-import MediaCarouselCards from '../components/MediaCarouselCards'
+import MediaMobileList from '../components/MediaMobileList'
 
 export default {
   name: 'UserListTitles',
   components: {
     BaseLoadingRoller,
     MediaCard,
-    MediaCarouselCards
+    MediaMobileList
   },
   data() {
     return {
