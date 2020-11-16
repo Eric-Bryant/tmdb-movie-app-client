@@ -37,10 +37,10 @@ export default {
     url(info) {
       if (info.title) {
         return `/movie/${info.id}`
-      } else if (info.original_name) {
-        return `/tv/${info.id}`
-      } else {
+      } else if (info.known_for_department) {
         return `/person/${info.id}`
+      } else {
+        return `/tv/${info.id}`
       }
     },
     image(info) {
