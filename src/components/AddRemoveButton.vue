@@ -104,6 +104,7 @@ export default {
       this.onList = false
 
       this.lists.map(list => {
+        list.isOnThisList = false
         if (list.onList[this.mediaInfo.id]) {
           this.onList = true
           list.isOnThisList = true
