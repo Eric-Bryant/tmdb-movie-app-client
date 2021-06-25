@@ -1,8 +1,8 @@
 <template>
   <v-container v-if="!loading">
-    <h1 class="mb-2">Hi {{ loggedIn ? getDisplayName : 'Anonymous' }}!</h1>
+    <h1 class="mb-5">Hi {{ loggedIn ? getDisplayName : 'Anonymous' }}!</h1>
     <div v-if="loggedIn">
-      <h2>Your Lists</h2>
+      <h2 class="mb-2">Your Lists</h2>
       <v-row>
         <v-col
           cols="12"
@@ -14,7 +14,7 @@
           <ListCard :list="list" />
         </v-col>
       </v-row>
-      <h2>Recommendations For You</h2>
+      <h2 class="mt-5 mb-2">Recommendations For You</h2>
       <MediaRecommendations />
     </div>
   </v-container>
