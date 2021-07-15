@@ -41,7 +41,7 @@ export default {
     },
     listSlug() {
       return this.list.name
-        .replace(' ', '-')
+        .replaceAll(' ', '-')
         .split('')
         .map(character => {
           return character.toLowerCase()

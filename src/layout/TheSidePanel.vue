@@ -28,7 +28,7 @@
           <v-icon>mdi-clipboard-list</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          My List
+          My Lists
         </v-list-item-content>
       </v-list-item>
       <v-list-item :to="{ name: 'Login' }" exact v-if="!loggedIn">
