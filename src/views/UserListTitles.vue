@@ -318,7 +318,7 @@ export default {
         }
       }
 
-      if (!this.duplicate) {
+      if (!this.duplicate && this.valid) {
         dbClient.renameList(this.getUID, this.list, fieldName, this.newListName)
         this.$router.push({ name: 'Home' })
       }
