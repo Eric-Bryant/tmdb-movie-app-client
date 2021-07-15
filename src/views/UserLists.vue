@@ -19,7 +19,7 @@
           <v-card-title class="text-h5 text-break">
             Create New List
           </v-card-title>
-          <v-form ref="form" v-model="valid" class="px-6 pb-4">
+          <v-form ref="form" v-model="valid" class="px-6 pb-4" @submit.prevent>
             <v-text-field
               v-model="newListName"
               label="New List Title"
@@ -27,6 +27,7 @@
               hide-details="auto"
               outlined
               :rules="rules"
+              @keyup.enter="createList"
             ></v-text-field>
             <p class="error--text text-caption" v-if="duplicate">
               You already have a list with that name.
@@ -120,7 +121,7 @@ export default {
         }
       }
 
-      if (!this.duplicate) {
+      if (!this.duplicate && this.valid) {
         dbClient.createNewList(this.getUID, this.newListName)
         this.addDialog = false
       }

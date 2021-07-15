@@ -20,13 +20,19 @@
             <v-card-title class="text-h5 text-break">
               Edit {{ listName }} List Title
             </v-card-title>
-            <v-form ref="form" v-model="valid" class="px-6 pb-4">
+            <v-form
+              ref="form"
+              v-model="valid"
+              class="px-6 pb-4"
+              @submit.prevent
+            >
               <v-text-field
                 v-model="newListName"
                 label="New List Title"
                 required
                 hide-details="auto"
                 outlined
+                @keyup.enter="renameList"
                 :rules="rules"
               ></v-text-field>
               <p class="error--text text-caption" v-if="duplicate">
@@ -123,13 +129,19 @@
             <v-card-title class="text-h5 text-break">
               Edit {{ listName }} List Title
             </v-card-title>
-            <v-form ref="form" v-model="valid" class="px-6 pb-4">
+            <v-form
+              ref="form"
+              v-model="valid"
+              class="px-6 pb-4"
+              @submit.prevent
+            >
               <v-text-field
                 v-model="newListName"
                 label="New List Title"
                 required
                 hide-details="auto"
                 outlined
+                @keyup.enter="renameList"
                 :rules="rules"
               ></v-text-field>
               <p class="error--text text-caption" v-if="duplicate">
