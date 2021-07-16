@@ -82,14 +82,16 @@ export default {
 
       if (recommendedMedia.data.results.length > 0) {
         for (let i = 0; i < 3; i++) {
-          let recommendedMediaTitle = recommendedMedia.data.results[i]
+          if (recommendedMedia.data.results[i]) {
+            let recommendedMediaTitle = recommendedMedia.data.results[i]
 
-          const isOnList = this.allTitlesOnLists.some(title => {
-            return title.id === recommendedMediaTitle.id
-          })
+            const isOnList = this.allTitlesOnLists.some(title => {
+              return title.id === recommendedMediaTitle.id
+            })
 
-          if (this.recommendations.length < 20 && !isOnList) {
-            this.recommendations.push(recommendedMediaTitle)
+            if (this.recommendations.length < 20 && !isOnList) {
+              this.recommendations.push(recommendedMediaTitle)
+            }
           }
         }
       }
