@@ -228,6 +228,7 @@ export default {
     return {
       userListTitles: [],
       list: [],
+      listName: '',
       editDialog: false,
       deleteDialog: false,
       newListName: '',
@@ -248,24 +249,19 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUID', 'getLists']),
-    listName() {
-      let words = this.$route.params.name.split('-')
-      const capitalizedWords = words.map(word => {
-        return capitalizeFirstLetter(word)
-      })
-
-      return capitalizedWords.join(' ')
-
-      function capitalizeFirstLetter(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1)
-      }
-    }
+    ...mapGetters(['getUID', 'getLists'])
   },
   methods: {
     getUserList() {
       const lists = []
       for (let key in this.getLists) {
+        if (
+          this.getLists[key].name.toLowerCase().replaceAll(' ', '-') ===
+          this.$route.params.name
+        ) {
+          this.listName = this.getLists[key].name
+        }
+
         if (this.getLists[key].name === this.listName) {
           this.list = this.getLists[key]
         }
