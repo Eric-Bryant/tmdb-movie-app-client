@@ -1,29 +1,7 @@
-# tmdb-movie-app
+# My Media Lists
 
-## Project setup
+Create your own movie / TV show lists and get recommendations based on what you have on your lists. Uses the [tMDB API](https://www.themoviedb.org/).
 
-```
-npm install
-```
+## Backend
 
-### Compiles and hot-reloads for development
-
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-
-```
-npm run build
-```
-
-### Lints and fixes files
-
-```
-npm run lint
-```
-
-### Customize configuration
-
-See [Configuration Reference](https://cli.vuejs.org/config/).
+[Backend Repo](https://github.com/shmickle/tmdb-movie-app-server)
