@@ -29,8 +29,8 @@
     <div class="d-flex align-center flex-column">
       <h1 class="mb-2 text-center">Welcome to My Media Lists</h1>
       <p>
-        Search for your favorite movie, show, or person. Account required to
-        create and manage lists.
+        Search for your favorite movie, show, actor, actress, or director.
+        Account required to create and manage lists.
       </p>
       <div class="d-flex align-center justify-center">
         <v-btn color="primary" :to="{ name: 'Login' }">Log In</v-btn>
