@@ -18,7 +18,6 @@
       :search-input.sync="search"
       hide-selected
       outlined
-      append-icon
       dense
       clearable
       hide-details
@@ -26,17 +25,14 @@
       item-value="title"
       placeholder="Search for something..."
       return-object
-      prepend-inner-icon="mdi-magnify"
+      append-icon="mdi-magnify"
       @change="goToDetails"
-      @click:prepend-inner="goToDetails"
+      @click:append="goToDetails"
       class="search-form-group__autocomplete"
     >
       <template v-slot:item="data">
         <template v-if="data.item.isSearch">
-          <v-list-item-content
-            v-text="data.item.title"
-            @click="goToDetails"
-          ></v-list-item-content>
+          <v-list-item-content v-text="data.item.title"></v-list-item-content>
         </template>
         <template v-else>
           <v-list-item-avatar v-if="resultImage(data)">
