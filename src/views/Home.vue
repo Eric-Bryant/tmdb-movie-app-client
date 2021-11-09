@@ -1,6 +1,6 @@
 <template>
-  <v-container v-if="!loading">
-    <h1 class="mb-5">Hi {{ loggedIn ? getDisplayName : 'Anonymous' }}!</h1>
+  <v-container v-if="!loading && loggedIn">
+    <h1 class="mb-5">Hi {{ getDisplayName }}!</h1>
     <div v-if="loggedIn">
       <h2 class="mb-2">Your Lists</h2>
       <v-row>
@@ -19,10 +19,25 @@
     </div>
   </v-container>
   <!-- Loading -->
-  <v-container fill-height class="justify-center" v-else>
+  <v-container fill-height class="justify-center" v-else-if="loading">
     <div class="d-flex align-center flex-column">
       <h1 class="mb-2 text-uppercase text-center">Loading...</h1>
       <BaseLoadingRoller />
+    </div>
+  </v-container>
+  <v-container fill-height class="justify-center" v-else>
+    <div class="d-flex align-center flex-column">
+      <h1 class="mb-2 text-center">Welcome to My Media Lists</h1>
+      <p>
+        Search for your favorite movie, show, or person. Account required to
+        create and manage lists.
+      </p>
+      <div class="d-flex align-center justify-center">
+        <v-btn color="primary" :to="{ name: 'Login' }">Log In</v-btn>
+        <v-btn color="primary" class="ml-2" :to="{ name: 'CreateAccount' }"
+          >Sign Up</v-btn
+        >
+      </div>
     </div>
   </v-container>
 </template>
