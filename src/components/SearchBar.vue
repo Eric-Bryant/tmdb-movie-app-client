@@ -25,9 +25,10 @@
       item-value="title"
       placeholder="Search for something..."
       return-object
-      append-icon="mdi-magnify"
+      append-outer-icon="mdi-magnify"
+      append-icon
       @change="goToDetails"
-      @click:append="goToDetails"
+      @click:append-outer="goToDetails"
       class="search-form-group__autocomplete"
     >
       <template v-slot:item="data">
@@ -237,5 +238,9 @@ export default {
 
 .avatar {
   object-fit: cover;
+}
+
+.v-autocomplete.v-select--is-menu-active .v-input__icon--append .v-icon {
+  transform: none;
 }
 </style>
