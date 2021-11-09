@@ -3,11 +3,15 @@
     <MediaCarouselCards
       :info="recommendations"
       :amount="recommendations.length"
+      v-if="recommendations.length >= 1"
     />
-    <p v-if="!loading && recommendations.length === 0">
-      No Recommendations.
-    </p>
+    <div class="d-flex justify-center" v-else>
+      <BaseLoadingRoller />
+    </div>
   </div>
+  <p v-else-if="!loading && recommendations.length === 0">
+    No Recommendations.
+  </p>
   <div class="d-flex justify-center" v-else>
     <BaseLoadingRoller />
   </div>
