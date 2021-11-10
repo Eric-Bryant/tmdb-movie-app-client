@@ -5,7 +5,7 @@
         alt="Sakura"
         class="shrink"
         contain
-        :src="require('../assets/sakura.svg')"
+        src="/assets/film-reel.svg"
         transition="scale-transition"
         width="40"
     /></router-link>
