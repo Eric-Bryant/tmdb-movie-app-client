@@ -28,6 +28,7 @@
       append-outer-icon="mdi-magnify"
       append-icon
       @change="goToDetails"
+      @keyup.enter="goToDetails"
       @click:append-outer="goToDetails"
       class="search-form-group__autocomplete"
     >
@@ -190,12 +191,12 @@ export default {
         this.$router.push(`/tv/${this.searchQuery.id}`)
       } else if (this.searchQuery.media_type == 'person') {
         this.$router.push(`/person/${this.searchQuery.id}`)
-      } else {
+      } else if (this.search != null) {
         this.$router.push(`/search/${this.search}/?type=${this.searchType}`)
       }
       this.$emit('closeModal')
       this.searchQuery = ''
-      this.search = ''
+      this.search = null
     }
   }
 }
