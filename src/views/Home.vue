@@ -28,7 +28,7 @@
   <v-container fill-height class="justify-center" v-else>
     <div class="d-flex align-center flex-column">
       <h1 class="mb-2 text-center">Welcome to My Media Lists</h1>
-      <p>
+      <p class="text-center">
         Search for your favorite movie, show, actor, actress, or director.
         Account required to create and manage lists.
       </p>
