@@ -191,7 +191,7 @@ export default {
         this.$router.push(`/tv/${this.searchQuery.id}`)
       } else if (this.searchQuery.media_type == 'person') {
         this.$router.push(`/person/${this.searchQuery.id}`)
-      } else if (this.search != null) {
+      } else if (this.search != null && this.search != '') {
         this.$router.push(`/search/${this.search}/?type=${this.searchType}`)
       }
       this.$emit('closeModal')
