@@ -11,6 +11,7 @@
           label="Email"
           required
           outlined
+          @keyup.enter="login"
         ></v-text-field>
         <v-text-field
           :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
@@ -22,7 +23,11 @@
           v-model="password"
           label="Password"
           required
+          @keyup.enter="login"
         ></v-text-field>
+        <p v-if="wrongPassword" class="red--text">
+          Your username and/or password is incorrect.
+        </p>
         <v-btn
           block
           color="success"
@@ -65,7 +70,8 @@ export default {
         v => !!v || 'Password is required',
         v => (v && v.length >= 8) || 'Password must be at least 8 characters'
       ],
-      loggingIn: false
+      loggingIn: false,
+      wrongPassword: false
     }
   },
   computed: {
@@ -91,21 +97,25 @@ export default {
         })
     },
     login() {
-      this.loggingIn = true
-      Firebase.auth
-        .signInWithEmailAndPassword(this.email, this.password)
-        .then(result => {
-          this.loggingIn = false
-          this.$router.push({ name: 'Home' })
-        })
-        .catch(error => {
-          this.loggingIn = false
-          var errorCode = error.code
-          var errorMessage = error.message
-          console.log(errorCode, errorMessage)
-        })
+      if (this.valid) {
+        this.loggingIn = true
+        Firebase.auth
+          .signInWithEmailAndPassword(this.email, this.password)
+          .then(result => {
+            this.loggingIn = false
+            this.$router.push({ name: 'Home' })
+          })
+          .catch(error => {
+            this.wrongPassword = true
+            this.loggingIn = false
+            var errorCode = error.code
+            var errorMessage = error.message
+            console.log(errorCode, errorMessage)
+          })
+      }
     },
     reset() {
+      this.wrongPassword = false
       this.$refs.form.reset()
     }
   }

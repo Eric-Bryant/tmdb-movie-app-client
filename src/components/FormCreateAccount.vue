@@ -7,19 +7,21 @@
       <v-form ref="form" v-model="valid" v-if="!loggedIn">
         <v-text-field
           v-model="firstName"
+          :rules="nameRules"
           label="First Name"
           required
           outlined
-          hide-details
           class="mb-2"
+          @keyup.enter="signUp"
         ></v-text-field>
         <v-text-field
           v-model="lastName"
+          :rules="nameRules"
           label="Last Name"
           required
           outlined
-          hide-details
           class="mb-2"
+          @keyup.enter="signUp"
         ></v-text-field>
         <v-text-field
           v-model="email"
@@ -27,6 +29,7 @@
           label="Email"
           required
           outlined
+          @keyup.enter="signUp"
         ></v-text-field>
         <v-text-field
           :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
@@ -38,6 +41,7 @@
           v-model="password"
           label="Password"
           required
+          @keyup.enter="signUp"
         ></v-text-field>
         <v-btn
           block
@@ -75,6 +79,7 @@ export default {
       email: '',
       password: '',
       showPass: false,
+      nameRules: [v => !!v || 'This field is required'],
       emailRules: [
         v => !!v || 'E-mail is required',
         v => /.+@.+\..+/.test(v) || 'E-mail must be valid'
@@ -92,47 +97,49 @@ export default {
   methods: {
     ...mapActions(['setUser']),
     signUp() {
-      this.loggingIn = true
-      Firebase.auth
-        .createUserWithEmailAndPassword(this.email, this.password)
-        .then(result => {
-          this.loggingIn = false
+      if (this.valid) {
+        this.loggingIn = true
+        Firebase.auth
+          .createUserWithEmailAndPassword(this.email, this.password)
+          .then(result => {
+            this.loggingIn = false
 
-          result.user
-            .updateProfile({
-              displayName: `${this.firstName} ${this.lastName}`
-            })
-            .then(() => {
-              console.log('display name updated')
-              this.setUser(result.user)
-            })
-            .catch(error => {
-              console.log(error)
-            })
+            result.user
+              .updateProfile({
+                displayName: `${this.firstName} ${this.lastName}`
+              })
+              .then(() => {
+                console.log('display name updated')
+                this.setUser(result.user)
+              })
+              .catch(error => {
+                console.log(error)
+              })
 
-          Firebase.db
-            .collection('lists')
-            .doc(result.user.uid)
-            .set({
-              watchList: {
-                name: 'Watch List',
-                onList: {}
-              },
-              watched: {
-                name: 'Watched',
-                onList: {}
-              }
-            })
+            Firebase.db
+              .collection('lists')
+              .doc(result.user.uid)
+              .set({
+                watchList: {
+                  name: 'Watch List',
+                  onList: {}
+                },
+                watched: {
+                  name: 'Watched',
+                  onList: {}
+                }
+              })
 
-          this.$router.push({ name: 'Home' })
-        })
-        .catch(error => {
-          this.loggingIn = false
-          // Handle Errors here.
-          var errorCode = error.code
-          var errorMessage = error.message
-          // ...
-        })
+            this.$router.push({ name: 'Home' })
+          })
+          .catch(error => {
+            this.loggingIn = false
+            // Handle Errors here.
+            var errorCode = error.code
+            var errorMessage = error.message
+            // ...
+          })
+      }
     },
     signUpGoogle() {
       this.loggingIn = true
