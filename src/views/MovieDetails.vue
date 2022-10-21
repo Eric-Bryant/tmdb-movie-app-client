@@ -47,7 +47,7 @@
                 size="64"
                 width="5"
                 :value="movie.vote_average * 10"
-                >{{ movie.vote_average * 10 }}%</v-progress-circular
+                >{{ Math.floor(movie.vote_average * 10) }}%</v-progress-circular
               >
               <AddRemoveButton
                 class="ml-2"
